@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Octi renders input graphs in an octilinear fashion using an approximation approach based on iterative shortest-path calculations on a special grid graph.">
+    <meta name="author" content="(C) 2019-2020 Patrick Brosi, University of Freiburg, Chair of Algorithms and Datastructures">
+    <meta name="contact" content="brosi[at]cs.uni-freiburg.de">
+    <meta name="viewport" content="initial-scale=1">
+    <meta property="og:title" content="octi - Octilinear Maps on Grid Graphs">
+    <meta property="og:image" content="/octi.png">
+    <meta property="og:description" content="Octi renders input graphs in an octilinear fashion using an approximation approach based on iterative shortest-path calculations on a special grid graph.">
+    <link rel="icon" href="favicon.ico">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+        <script src="lib/proj4.js"></script>
+        <script src="lib/proj4leaflet.js"></script>
+
+    <title>octi - Octilinear Maps on Grid Graphs</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Tomorrow&display=swap" rel="stylesheet">
+
+    <style type="text/css">
+      :focus {
+  outline: 0
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box
+}
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -ms-overflow-style: scrollbar;
+  -webkit-tap-highlight-color: transparent
+}
+
+@-ms-viewport {
+  width: device-width
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+  -webkit-text-decoration-skip: objects
+}
+
+a:hover {
+  color: #0056b3;
+  text-decoration: underline
+}
+
+img {
+  vertical-align: middle;
+  border-style: none
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto
+}
+
+@media (min-width:576px) {
+  .container {
+    max-width: 540px
+  }
+}
+
+@media (min-width:768px) {
+  .container {
+    max-width: 720px
+  }
+}
+
+@media (min-width:992px) {
+  .container {
+    max-width: 960px
+  }
+}
+
+@media (min-width:1200px) {
+  .container {
+    max-width: 1140px
+  }
+}
+
+@media (min-width:1400px) {
+  .container {
+    max-width: 1320px
+  }
+}
+
+@media (min-width:1600px) {
+  .container {
+    max-width: 1540px
+  }
+}
+
+@media (min-width:1800px) {
+  .container {
+    max-width: 1740px
+  }
+}
+
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px
+}
+
+.desc-wrp {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px -webkit-box-flex: 0;
+  -ms-flex: 0 0 83.333333%;
+  flex: 0 0 83.333333%;
+  max-width: 83.333333%
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  cursor: pointer;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  background-color: #545b62;
+  border-color: #4e555b
+}
+
+.btn.focus,
+.btn:focus {
+  outline: 0;
+  box-shadow: 0 0 0 .2rem rgba(108, 117, 125, .5)
+}
+
+.btn:hover {
+  color: #fff;
+  background-color: #5a6268;
+  border-color: #545b62;
+  text-decoration: none
+}
+
+nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none
+}
+
+nav a {
+  padding: .5rem!important;
+  color: #6c757d!important;
+  display: -webkit-box!important;
+  display: -ms-flexbox!important;
+  display: flex!important
+}
+
+#map-ctn {
+  padding: 0;
+  margin-bottom: 2rem;
+  background-color: #343a4014!important;
+  border-radius: .3rem;
+  height: 700px;
+  overflow: hidden;
+  border-radius: .25rem!important;
+  color: #fff!important
+}
+
+#map-raw, #map-octi {
+  padding: 0;
+  margin-bottom: 2rem;
+  border-radius: .3rem;
+  height: 700px;
+  overflow: hidden;
+  border-radius: .25rem!important;
+  color: #fff!important
+}
+
+@media (min-width:576px) {
+  #map-ctn {
+    padding: 4rem 2rem
+  }
+}
+
+@media (min-width:768px) {
+  .p-md-5 {
+    padding: 3rem!important
+  }
+}
+
+.txt-center {
+  text-align: center!important
+}
+
+#switches {
+  opacity: 75%;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding-left: 10px;
+  position: absolute;
+  right: 10px;
+  top: 10px
+}
+
+#switches .btn {
+  margin-bottom: 4px
+}
+
+#map-ctn {
+  cursor: pointer
+}
+
+#map {
+  height: 95%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2%
+}
+
+.octi-header {
+  line-height: 1;
+  border-bottom: 1px solid #e5e5e5;
+  padding-top: 1rem!important;
+  padding-bottom: 1rem!important
+}
+
+.octi-header-logo {
+  font-size: 2.25rem;
+  color: #343a40!important
+}
+
+.octi-header .row {
+  -ms-flex-wrap: nowrap!important;
+  flex-wrap: nowrap!important
+}
+
+.octi-font {
+  font-family: Tomorrow, Georgia, "Times New Roman", serif
+}
+
+.octi-header-logo:hover {
+  text-decoration: none
+}
+
+.t-100 #b100,
+.t-125 #b125,
+.t-75 #b75,
+.t-near-geo #bnear-geo,
+.t-no-diag #bno-diag,
+.t-no-vert #bno-vert,
+.t-raw #braw {
+  color: #fff;
+  background-color: #aaa;
+  border-color: #a4a7ab
+}
+
+.freiburg #freiburg-but {
+  text-decoration: underline
+}
+
+.t-near-geo #bnear-geo,
+.t-no-diag #bno-diag,
+.t-no-vert #bno-vert,
+.t-raw #braw {
+  color: #fff;
+  background-color: #aaa;
+  border-color: #a4a7ab
+}
+
+.berlin #berlin-but,
+.freiburg #freiburg-but,
+.london #london-but,
+.stuttgart #stuttgart-but,
+.sydney #sydney-but,
+.vienna #vienna-but {
+  text-decoration: underline
+}
+
+.display-4 {
+  font-size: 2.5rem
+}
+
+@media (min-width:768px) {
+  .display-4 {
+    font-size: 3rem
+  }
+}
+
+.nav-wrp {
+  position: relative;
+  z-index: 2;
+  height: 2.75rem;
+  overflow-y: hidden;
+  padding-top: .25rem!important;
+  margin-bottom: .5rem!important
+}
+
+.nav-wrp nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  padding-bottom: 1rem;
+  margin-top: -1px;
+  overflow-x: auto;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch
+}
+
+.nav-wrp .nav-link {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  font-size: .875rem
+}
+
+.octi-title {
+  margin-bottom: 0;
+  font-size: 2rem;
+  font-weight: 400
+}
+
+.octi-description {
+  font-size: 1.1rem;
+  color: #999
+}
+
+@media (min-width:40em) {
+  .octi-title {
+    font-size: 3.5rem
+  }
+}
+
+footer {
+  padding: 2.5rem 0;
+  color: #999;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: .05rem solid #e5e5e5
+}
+
+.octi-footer p:last-child {
+  margin-bottom: 0
+}
+
+#mswitches::before {
+  content: "Approach";
+  color: #444;
+  font-size: 80%;
+  top: -.5em;
+  position: relative
+}
+
+#switches::before {
+  content: "Variant";
+  color: #444;
+  font-size: 80%;
+  margin-right: .5em
+}
+
+#mswitches {
+  opacity: 75%;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding-right: 10px;
+  position: absolute;
+  width: 80px;
+  text-align: right
+}
+
+#mswitches .btn {
+  width: 80px;
+  margin-bottom: 5px
+}
+
+#zoombuts {
+  opacity: 75%;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding-right: 10px;
+  position: absolute;
+  width: 40px;
+  text-align: right;
+  font-size: 120%
+}
+
+#zoombuts .btn {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px
+}
+
+.m-a #ma,
+.m-a2 #ma2,
+.m-a2d #ma2d,
+.m-lp #mlp,
+.m-lp2 #mlp2 {
+  color: #fff;
+  background-color: #aaa;
+  border-color: #a4a7ab
+}
+
+#octimap, #rawmap {
+  width: 50%;
+  float: left;  
+}
+  </style>
+    <script src='lib/panzoom.min.js'></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header class="octi-header">
+        <div class="row">
+          <div class="txt-center" style="margin:auto">
+            <a class="octi-header-logo octi-font" href="#">octi evaluation</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="nav-wrp">
+        <nav>
+          <a title="Map of the Freiburg tram network." id="freiburg-but" href="#freiburg">Freiburg</a>
+          <a title="Map of the Vienna subway network." id="vienna-but" href="#vienna">Vienna</a>
+          <a title="Map of the Stuttgart light rail network." id="stuttgart-but" href="#stuttgart">Stuttgart</a>
+          <a title="Map of the Berlin subway network." id="berlin-but" href="#berlin">Berlin</a>
+          <a title="Map of the Sydney CityRail network." id="sydney-but" href="#sydney">Sydney</a>
+          <a title="Map of the London Underground network." id="london-but" href="#london">London</a>
+        </nav>
+      </div>
+
+      <div id="rawmap" style="position:relative;">
+        <div id="map-raw">
+        </div>
+
+        <div id="stats-raw" class="stats">
+        </div>
+      </div>
+
+      <div id="octimap" style="position:relative;">
+        <div style="display:none;" id="map-ctn">
+            <img id="map" src="datasets/empty.svg" alt="Octilinearized map">
+        </div>
+        <div id="map-octi">
+        </div>
+
+         <div id="stats-octi" class="stats">
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>2021 University of Freiburg, <a target="_blank" href="https://ad.informatik.uni-freiburg.de/">Chair of Algorithms and Data Structures</a> | <a target="_blank" href="https://ad.informatik.uni-freiburg.de/impressum">Imprint</a> | <a target="_blank" href="https://www.uni-freiburg.de/datenschutzerklaerung-en.html">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+      var types = ["75", "100", "125", "no-diag", "no-vert", "near-geo", "raw"];
+      var modes = ["a2d", "a2", "a", "lp2", "lp"];
+      var map = document.getElementById("map");
+
+      window.onhashchange = function(){
+        var parts = location.hash.slice(1).split("_");
+
+        t = parts[1] || "75", id = parts[0] || "freiburg", m = parts[2] || "a2d";
+        location.hash = "#" + id + "_" + t + "_" + m;
+
+        document.body.className = id + " t-" + t + " m-" + m;
+        map.src="datasets/" + id + "/" + (t != "raw" ? m + "/": "") + t + ".svg";
+
+        //for (var i in types) document.getElementById("b" + types[i]).href = "#" + id + "_" + types[i] + "_" + m;
+        //for (var i in modes) document.getElementById("m" + modes[i]).href = "#" + id + "_" + t + "_" + modes[i];
+      }
+
+      var pz = panzoom(map, {zoomSpeed: 0.15, minZoom: 0.5, maxZoom: 15});
+      window.onhashchange();
+
+      function loadOctiRes(name, grid, method, d, deg2, dpen) {
+        return new Promise((res, rej) => {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '../render-' + grid + '/' + d + '/' + (deg2? "deg2":"") + "/"+ name +"/res_" + method + ".json");
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.responseType = 'json';
+          xhr.onload = function() {
+              if (xhr.status !== 200) {
+                rej({});
+                return;
+              }
+              var geojson = xhr.response;
+              geojson["crs"] = {'type': 'name', 'properties': {'name': 'urn:ogc:def:crs:EPSG::3857'}};
+              res(geojson);
+          };
+          xhr.send();
+        });
+      }  
+
+      function fmtNum(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function loadDataset(name) {
+        return new Promise((res, rej) => {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '../datasets/' + name + '.json');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.responseType = 'json';
+          xhr.onload = function() {
+              if (xhr.status !== 200) {
+                rej({});
+                return;
+              }
+              var geojson = xhr.response;
+              geojson["crs"] = {'type': 'name', 'properties': {'name': 'urn:ogc:def:crs:EPSG::3857'}};
+              res(geojson);
+          };
+          xhr.send();
+        });
+      }  
+
+      function addStatRow(tbl, as, bs) {
+        var row = tbl.insertRow();
+        var a = row.insertCell();
+        var b = row.insertCell();
+        a.appendChild(document.createTextNode(as));
+        b.appendChild(document.createTextNode(bs));
+      }
+
+      function getStatTableRes(res) {
+        var props = res["properties"];
+        console.log(props);
+        var tbl = document.createElement("table");
+        addStatRow(tbl, "gridgraph size: ", fmtNum(props["gridgraph-size"]["nodes"]) + " nodes, " + fmtNum(props["gridgraph-size"]["edges"]) + " edges");
+
+        if (props["ilp"] != undefined) {
+          addStatRow(tbl, "ilp size: ", fmtNum(props["ilp"]["size"]["cols"]) + " cols, " + fmtNum(props["ilp"]["size"]["rows"]) + " rows");
+          addStatRow(tbl, "ilp solve time: ", props["ilp"]["solve-time"] + " ms");
+        }
+
+        addStatRow(tbl, "deg-2 heur: ", props["misc"]["deg2heur"] ? "yes" : "no");
+        addStatRow(tbl, "max grid dist: ", props["misc"]["max-grid-dist"]);
+        addStatRow(tbl, "solve method: ", props["misc"]["method"]);
+        addStatRow(tbl, "pen-180: ", props["pens"]["180-turn-pen"]);
+        addStatRow(tbl, "pen-135: ", props["pens"]["135-turn-pen"]);
+        addStatRow(tbl, "pen-90: ", props["pens"]["90-turn-pen"]);
+        addStatRow(tbl, "pen-45: ", props["pens"]["45-turn-pen"]);
+        addStatRow(tbl, "pen-diag: ", props["pens"]["diag-pen"]);
+        addStatRow(tbl, "pen-hori: ", props["pens"]["hori-pen"]);
+        addStatRow(tbl, "pen-vert: ", props["pens"]["vert-pen"]);
+
+        addStatRow(tbl, "# processors", props["procs"]);
+        addStatRow(tbl, "target", props["scores"]["total_score"].toFixed(2));
+        addStatRow(tbl, "time", props["time_ms"].toFixed(2) + " ms");
+        addStatRow(tbl, "created", new Date(props["timestamp"] * 1000).toLocaleString());
+
+
+        return tbl;
+      }
+
+      function getStatTableDataset(ds) {
+        var lines = {};
+        var M = 0;
+        var numNodes = 0;
+        var numEdges = 0;
+        var maxDegree = 0;
+        var numStations = 0;
+        for (var feat of ds["features"]) {
+          if (feat["geometry"]["type"] == "LineString") {
+            var props = feat["properties"];
+            numEdges++;
+
+            for (var line of props["lines"]) {
+              lines[line["id"]] = {};
+            }
+            if (props["lines"].length > M) M = props["lines"].length;
+          } else {
+            numNodes++;
+            var props = feat["properties"];
+            if (props["deg"] > maxDegree) maxDegree = props["deg"];
+            if (props["station_id"] != undefined) numStations++;
+          }
+        }
+        var tbl = document.createElement("table");
+
+        addStatRow(tbl, "graph size: ", numNodes + " nodes, " + numEdges + " edges");
+        addStatRow(tbl, "num stations", numStations);
+        addStatRow(tbl, "num topo nodes", numNodes - numStations);
+        addStatRow(tbl, "maximum # lines per segment", M);
+        addStatRow(tbl, "# lines", Object.keys(lines).length);
+        addStatRow(tbl, "max degree", maxDegree);
+
+        return tbl;
+      }
+    </script>
+
+
+    <script>
+      var map = L.map('map-raw').setView([47.9941373,7.8274107], 13);
+
+      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox/light-v9',
+        tileSize: 512,
+        zoomOffset: -1
+      }).addTo(map);
+
+      loadDataset("freiburg").then((geojson) => { 
+        document.getElementById("stats-raw").appendChild(getStatTableDataset(geojson));
+        L.Proj.geoJson(geojson, {
+          'pointToLayer': function(feature, latlng) {
+              return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
+          },
+          style: function(feature) {
+            if (feature["geometry"]["type"] == "LineString") {
+              return {
+                  "color": "#ff7800",
+                  "weight": 5,
+                  "opacity": 0.65
+              }
+            }
+        }
+        }).addTo(map)}
+      );
+
+      var mapocti = L.map('map-octi').setView([47.9941373,7.8274107], 13);
+
+      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox/light-v9',
+        tileSize: 512,
+        zoomOffset: -1
+      }).addTo(mapocti);
+
+      loadOctiRes("freiburg", "octihanan", "ilp", 100, true, false).then((geojson) => { 
+        document.getElementById("stats-octi").appendChild(getStatTableRes(geojson));
+        L.Proj.geoJson(geojson, {
+          'pointToLayer': function(feature, latlng) {
+              return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
+          }
+        }).addTo(mapocti)}
+      );
+    </script>
+  </body>
+</html>
+

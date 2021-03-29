@@ -174,6 +174,10 @@ img {
   border-color: #4e555b
 }
 
+#map-octi{
+  background:#eee;
+}
+
 .btn.focus,
 .btn:focus {
   outline: 0;
@@ -457,8 +461,23 @@ footer {
 }
 
 #octimap, #rawmap {
-  width: 50%;
-  float: left;  
+  width: 49%;
+  float: left;
+  margin: 0.5%; 
+}
+
+#datasets, #optmethod, #gridtype, #cellsize {
+  width: 200px;
+  height: 2rem;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.stats {
+  font-size: 80%;
+  line-height: 1;
 }
   </style>
     <script src='lib/panzoom.min.js'></script>
@@ -475,14 +494,26 @@ footer {
       </header>
 
       <div class="nav-wrp">
-        <nav>
-          <a title="Map of the Freiburg tram network." id="freiburg-but" href="#freiburg">Freiburg</a>
-          <a title="Map of the Vienna subway network." id="vienna-but" href="#vienna">Vienna</a>
-          <a title="Map of the Stuttgart light rail network." id="stuttgart-but" href="#stuttgart">Stuttgart</a>
-          <a title="Map of the Berlin subway network." id="berlin-but" href="#berlin">Berlin</a>
-          <a title="Map of the Sydney CityRail network." id="sydney-but" href="#sydney">Sydney</a>
-          <a title="Map of the London Underground network." id="london-but" href="#london">London</a>
-        </nav>
+        <label for="datasets">Dataset:</label>
+        <select name="datasets" id="datasets">
+        </select>
+
+        <label for="optmethod">Optimization method:</label>
+        <select name="optmethod" id="optmethod">
+        </select>
+
+        <label for="gridtype">Grid:</label>
+        <select name="gridtype" id="gridtype">
+        </select>
+
+        <label for="cellsize">Cell size:</label>
+        <select name="cellsize" id="cellsize">
+        </select>
+
+        <label for="deg2heur">deg-2 heur</label>
+        <input type="checkbox" id="deg2heur" name="deg2heur" checked="true" value="deg2heur">
+        <label for="densitypen">density penalty:</label>
+        <input type="checkbox" id="densitypen" name="densitypen" value="densitypen" checked="true">
       </div>
 
       <div id="rawmap" style="position:relative;">
@@ -510,30 +541,85 @@ footer {
     </footer>
 
     <script>
-      var types = ["75", "100", "125", "no-diag", "no-vert", "near-geo", "raw"];
-      var modes = ["a2d", "a2", "a", "lp2", "lp"];
-      var map = document.getElementById("map");
+      var datasets = ["freiburg", "wien", "stuttgart", "berlin", "sydney"]
+      var grids = ["octilinear", "chulloctilinear", "octihanan", "quadtree", "hexalinear", "porthorad"];
+      var optmethods = ["heur", "ilp"];
+      var gridsizes = [75, 100, 125];
+     // var map = document.getElementById("map");
 
-      window.onhashchange = function(){
-        var parts = location.hash.slice(1).split("_");
-
-        t = parts[1] || "75", id = parts[0] || "freiburg", m = parts[2] || "a2d";
-        location.hash = "#" + id + "_" + t + "_" + m;
-
-        document.body.className = id + " t-" + t + " m-" + m;
-        map.src="datasets/" + id + "/" + (t != "raw" ? m + "/": "") + t + ".svg";
-
-        //for (var i in types) document.getElementById("b" + types[i]).href = "#" + id + "_" + types[i] + "_" + m;
-        //for (var i in modes) document.getElementById("m" + modes[i]).href = "#" + id + "_" + t + "_" + modes[i];
+      function update() {
+        var dataset = document.getElementById("datasets").value;
+        var optmethod = document.getElementById("optmethod").value;
+        var gridtype = document.getElementById("gridtype").value;
+        var cellsize = document.getElementById("cellsize").value;
+        var dpen = document.getElementById("densitypen").checked;
+        var deg2 = document.getElementById("deg2heur").checked;
+        changeDatasetMap(dataset);
+        changeResMap(dataset, gridtype, optmethod, cellsize, deg2, dpen);
       }
 
-      var pz = panzoom(map, {zoomSpeed: 0.15, minZoom: 0.5, maxZoom: 15});
+      document.getElementById("densitypen").onchange = update;
+      document.getElementById("deg2heur").onchange = function() {
+        if (!this.checked) {
+          document.getElementById("densitypen").checked = false;
+          document.getElementById("densitypen").disabled = true;
+        } else {
+          document.getElementById("densitypen").disabled = false;
+          document.getElementById("densitypen").checked = true;
+        }
+        update();
+      };
+
+      var dsselect = document.getElementById("datasets");
+      dsselect.onchange = update;
+      for (var dataset of datasets) {
+        var option = document.createElement("option");
+        option.text = dataset;
+        option.value = dataset;
+        dsselect.add(option);
+      }
+
+      var optmethodsel = document.getElementById("optmethod");
+      optmethodsel.onchange = update;
+      for (var optmethod of optmethods) {
+        var option = document.createElement("option");
+        option.text = optmethod;
+        option.value = optmethod;
+        optmethodsel.add(option);
+      }
+
+      var gridtypesel = document.getElementById("gridtype");
+      gridtypesel.onchange = update;
+      for (var grid of grids) {
+        var option = document.createElement("option");
+        option.text = grid;
+        option.value = grid;
+        gridtypesel.add(option);
+      }
+
+
+      var gridsizesel = document.getElementById("cellsize");
+      gridsizesel.onchange = update;
+      for (var size of gridsizes) {
+        var option = document.createElement("option");
+        option.text = size;
+        option.value = size;
+        gridsizesel.add(option);
+      }
+
+      window.onhashchange = function(){
+        //map.src="datasets/" + id + "/" + (t != "raw" ? m + "/": "") + t + ".svg";
+      }
+
+      // var pz = panzoom(map, {zoomSpeed: 0.15, minZoom: 0.5, maxZoom: 15});
       window.onhashchange();
 
       function loadOctiRes(name, grid, method, d, deg2, dpen) {
+        if (grid == "octilinear") grid = "";
+        else grid = "-"+grid;
         return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', '../render-' + grid + '/' + d + '/' + (deg2? "deg2":"") + "/"+ name +"/res_" + method + ".json");
+          xhr.open('GET', '../render' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/"+ name +"/res_" + method + ".json");
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.responseType = 'json';
           xhr.onload = function() {
@@ -601,12 +687,13 @@ footer {
         addStatRow(tbl, "pen-diag: ", props["pens"]["diag-pen"]);
         addStatRow(tbl, "pen-hori: ", props["pens"]["hori-pen"]);
         addStatRow(tbl, "pen-vert: ", props["pens"]["vert-pen"]);
+        addStatRow(tbl, "pen-density: ", props["pens"]["density-pen"]);
 
         addStatRow(tbl, "# processors", props["procs"]);
         addStatRow(tbl, "target", props["scores"]["total_score"].toFixed(2));
+        addStatRow(tbl, "topo-violations", props["scores"]["topo-violations"]);
         addStatRow(tbl, "time", props["time_ms"].toFixed(2) + " ms");
         addStatRow(tbl, "created", new Date(props["timestamp"] * 1000).toLocaleString());
-
 
         return tbl;
       }
@@ -639,17 +726,55 @@ footer {
         addStatRow(tbl, "graph size: ", numNodes + " nodes, " + numEdges + " edges");
         addStatRow(tbl, "num stations", numStations);
         addStatRow(tbl, "num topo nodes", numNodes - numStations);
-        addStatRow(tbl, "maximum # lines per segment", M);
+        addStatRow(tbl, "maximum # lines per seg", M);
         addStatRow(tbl, "# lines", Object.keys(lines).length);
         addStatRow(tbl, "max degree", maxDegree);
 
         return tbl;
+      }
+
+      function changeDatasetMap(dataset) {
+        if (datasetLayer) map.removeLayer(datasetLayer);
+        loadDataset(dataset).then((geojson) => { 
+          document.getElementById("stats-raw").innerHTML = "";
+          document.getElementById("stats-raw").appendChild(getStatTableDataset(geojson));
+          datasetLayer = L.Proj.geoJson(geojson, {
+            'pointToLayer': function(feature, latlng) {
+                return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
+            },
+            style: function(feature) {
+              if (feature["geometry"]["type"] == "LineString") {
+                return {
+                    "color": "#ff7800",
+                    "weight": 5,
+                    "opacity": 0.65
+                }
+              }
+          }
+          }).addTo(map);
+          map.fitBounds(datasetLayer.getBounds());}
+        );
+      }
+
+      function changeResMap(dataset, grid, method, gridsize, deg2heur, dpen) {
+        if (resLayer) mapocti.removeLayer(resLayer);
+        loadOctiRes(dataset, grid, method, gridsize, deg2heur, dpen).then((geojson) => { 
+          document.getElementById("stats-octi").innerHTML = "";
+          document.getElementById("stats-octi").appendChild(getStatTableRes(geojson));
+          resLayer = L.Proj.geoJson(geojson, {
+            'pointToLayer': function(feature, latlng) {
+                return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
+            }
+          }).addTo(mapocti);
+          mapocti.fitBounds(resLayer.getBounds());}
+        );
       }
     </script>
 
 
     <script>
       var map = L.map('map-raw').setView([47.9941373,7.8274107], 13);
+      var datasetLayer, resLayer;
 
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
@@ -660,24 +785,6 @@ footer {
         zoomOffset: -1
       }).addTo(map);
 
-      loadDataset("freiburg").then((geojson) => { 
-        document.getElementById("stats-raw").appendChild(getStatTableDataset(geojson));
-        L.Proj.geoJson(geojson, {
-          'pointToLayer': function(feature, latlng) {
-              return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
-          },
-          style: function(feature) {
-            if (feature["geometry"]["type"] == "LineString") {
-              return {
-                  "color": "#ff7800",
-                  "weight": 5,
-                  "opacity": 0.65
-              }
-            }
-        }
-        }).addTo(map)}
-      );
-
       var mapocti = L.map('map-octi').setView([47.9941373,7.8274107], 13);
 
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -686,18 +793,11 @@ footer {
           'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         id: 'mapbox/light-v9',
         tileSize: 512,
-        zoomOffset: -1
+        zoomOffset: -1,
+        opacity:0.3
       }).addTo(mapocti);
 
-      loadOctiRes("freiburg", "octihanan", "ilp", 100, true, false).then((geojson) => { 
-        document.getElementById("stats-octi").appendChild(getStatTableRes(geojson));
-        L.Proj.geoJson(geojson, {
-          'pointToLayer': function(feature, latlng) {
-              return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
-          }
-        }).addTo(mapocti)}
-      );
+      update();
     </script>
   </body>
 </html>
-

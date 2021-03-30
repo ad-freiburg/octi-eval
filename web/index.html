@@ -542,7 +542,7 @@ footer {
 
     <script>
       var datasets = ["freiburg", "wien", "stuttgart", "berlin", "sydney"]
-      var grids = ["octilinear", "chulloctilinear", "octihanan", "quadtree", "hexalinear", "porthorad"];
+      var grids = ["octilinear", "chulloctilinear", "octihanan", "octihanan2", "quadtree", "hexalinear", "porthorad"];
       var optmethods = ["heur", "ilp"];
       var gridsizes = [75, 100, 125];
      // var map = document.getElementById("map");
@@ -554,21 +554,20 @@ footer {
         var cellsize = document.getElementById("cellsize").value;
         var dpen = document.getElementById("densitypen").checked;
         var deg2 = document.getElementById("deg2heur").checked;
+
+        if (!deg2 || optmethod == "ilp") {
+          document.getElementById("densitypen").checked = false;
+          document.getElementById("densitypen").disabled = true;
+        } else {
+          document.getElementById("densitypen").disabled = false;
+        }
+
         changeDatasetMap(dataset);
         changeResMap(dataset, gridtype, optmethod, cellsize, deg2, dpen);
       }
 
       document.getElementById("densitypen").onchange = update;
-      document.getElementById("deg2heur").onchange = function() {
-        if (!this.checked) {
-          document.getElementById("densitypen").checked = false;
-          document.getElementById("densitypen").disabled = true;
-        } else {
-          document.getElementById("densitypen").disabled = false;
-          document.getElementById("densitypen").checked = true;
-        }
-        update();
-      };
+      document.getElementById("deg2heur").onchange = update;
 
       var dsselect = document.getElementById("datasets");
       dsselect.onchange = update;
@@ -615,6 +614,7 @@ footer {
       window.onhashchange();
 
       function loadOctiRes(name, grid, method, d, deg2, dpen) {
+        document.getElementById("stats-octi").innerHTML = "";
         if (grid == "octilinear") grid = "";
         else grid = "-"+grid;
         return new Promise((res, rej) => {
@@ -640,6 +640,7 @@ footer {
       }
 
       function loadDataset(name) {
+        document.getElementById("stats-raw").innerHTML = "";
         return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
           xhr.open('GET', '../datasets/' + name + '.json');
@@ -668,7 +669,6 @@ footer {
 
       function getStatTableRes(res) {
         var props = res["properties"];
-        console.log(props);
         var tbl = document.createElement("table");
         addStatRow(tbl, "gridgraph size: ", fmtNum(props["gridgraph-size"]["nodes"]) + " nodes, " + fmtNum(props["gridgraph-size"]["edges"]) + " edges");
 
@@ -733,20 +733,68 @@ footer {
         return tbl;
       }
 
+      function highlightStation(statid) {
+        if (!statid) return;
+        datasetLayer.eachLayer(function(layer) {
+          if (layer.feature.properties.station_id == statid) {
+            layer.setStyle({
+              "color": "#f58d42",
+              "weight": 15,
+              "opacity": 0.65
+            });
+          }
+        });
+
+        resLayer.eachLayer(function(layer) {
+          if (layer.feature.properties.station_id == statid) {
+            layer.setStyle({
+              "weight": 15,
+              "opacity": 0.65
+            });
+          }
+        });
+      }
+
+      function unhighlightStation(statid) {        
+        if (!statid) return;
+        datasetLayer.eachLayer(function(layer) {
+          if (layer.feature.properties.station_id == statid) {
+            layer.setStyle({
+              "color": "#f58d42",
+              "weight": 5,
+              "opacity": 0.65
+            });
+          }
+        });
+        resLayer.eachLayer(function(layer) {
+          if (layer.feature.properties.station_id == statid) {
+            layer.setStyle({
+              "weight": 5,
+              "opacity": 0.65
+            });
+          }
+        });
+      }
+
       function changeDatasetMap(dataset) {
         if (datasetLayer) map.removeLayer(datasetLayer);
         loadDataset(dataset).then((geojson) => { 
-          document.getElementById("stats-raw").innerHTML = "";
           document.getElementById("stats-raw").appendChild(getStatTableDataset(geojson));
           datasetLayer = L.Proj.geoJson(geojson, {
             'pointToLayer': function(feature, latlng) {
-                return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
+                return L.circleMarker(latlng, {radius:3, "color": "#f58d42"});
+            },
+            'onEachFeature': function(feature, layer) {
+              layer.on({
+                  mouseover: function(e) {highlightStation(e.sourceTarget.feature.properties.station_id)},
+                  mouseout: function(e) {unhighlightStation(e.sourceTarget.feature.properties.station_id)}
+              });
             },
             style: function(feature) {
               if (feature["geometry"]["type"] == "LineString") {
                 return {
-                    "color": "#ff7800",
-                    "weight": 5,
+                    "color": "#f58d42",
+                    "weight": 3,
                     "opacity": 0.65
                 }
               }
@@ -759,14 +807,28 @@ footer {
       function changeResMap(dataset, grid, method, gridsize, deg2heur, dpen) {
         if (resLayer) mapocti.removeLayer(resLayer);
         loadOctiRes(dataset, grid, method, gridsize, deg2heur, dpen).then((geojson) => { 
-          document.getElementById("stats-octi").innerHTML = "";
           document.getElementById("stats-octi").appendChild(getStatTableRes(geojson));
           resLayer = L.Proj.geoJson(geojson, {
             'pointToLayer': function(feature, latlng) {
-                return L.circleMarker(latlng, {radius:3}).bindPopup(feature.properties.name);
-            }
+                return L.circleMarker(latlng, {radius:3});
+            },
+            'onEachFeature': function(feature, layer) {
+              layer.on({
+                  mouseover: function(e) {highlightStation(e.sourceTarget.feature.properties.station_id)},
+                  mouseout: function(e) {unhighlightStation(e.sourceTarget.feature.properties.station_id)}
+              });
+            },
+            style: function(feature) {
+              if (feature["geometry"]["type"] == "LineString") {
+                return {
+                    "weight": 5,
+                    "opacity": 0.65
+                }
+              }
+          }
           }).addTo(mapocti);
-          mapocti.fitBounds(resLayer.getBounds());}
+          mapocti.fitBounds(resLayer.getBounds());},
+          () => {console.log("Result not found.");}
         );
       }
     </script>

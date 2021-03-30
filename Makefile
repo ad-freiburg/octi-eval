@@ -4,9 +4,10 @@
 
 OCTI = /home/patrick/repos/loom/build/octi
 ILP_TIMEOUT = 43200 # timeout = 12 hours
+#ILP_TIMEOUT = 300 # timeout = 5 minutes
 ILP_CACHE_DIR = /tmp
-
 METHOD = heur
+
 GLOB_ARGS = --stats -o $(METHOD) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-time-limit $(ILP_TIMEOUT) --restr-loc-search
 
 DATASETS = $(basename $(notdir $(wildcard datasets/*.json)))
@@ -65,6 +66,10 @@ RNDR_OCTIHANAN_DEG2_75 := $(patsubst %, render-octihanan/75/deg2/%/res_$(METHOD)
 RNDR_OCTIHANAN_DEG2_100 := $(patsubst %, render-octihanan/100/deg2/%/res_$(METHOD).json, $(DATASETS))
 RNDR_OCTIHANAN_DEG2_125 := $(patsubst %, render-octihanan/125/deg2/%/res_$(METHOD).json, $(DATASETS))
 
+RNDR_OCTIHANAN2_DEG2_75 := $(patsubst %, render-octihanan2/75/deg2/%/res_$(METHOD).json, $(DATASETS))
+RNDR_OCTIHANAN2_DEG2_100 := $(patsubst %, render-octihanan2/100/deg2/%/res_$(METHOD).json, $(DATASETS))
+RNDR_OCTIHANAN2_DEG2_125 := $(patsubst %, render-octihanan2/125/deg2/%/res_$(METHOD).json, $(DATASETS))
+
 RNDR_PORTHORAD_DEG2_75 := $(patsubst %, render-porthorad/75/deg2/%/res_$(METHOD).json, $(DATASETS))
 RNDR_PORTHORAD_DEG2_100 := $(patsubst %, render-porthorad/100/deg2/%/res_$(METHOD).json, $(DATASETS))
 RNDR_PORTHORAD_DEG2_125 := $(patsubst %, render-porthorad/125/deg2/%/res_$(METHOD).json, $(DATASETS))
@@ -87,11 +92,15 @@ RNDR_OCTIHANAN_DEG2_DPEN_75 := $(patsubst %, render-octihanan/75/deg2-dpen/%/res
 RNDR_OCTIHANAN_DEG2_DPEN_100 := $(patsubst %, render-octihanan/100/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 RNDR_OCTIHANAN_DEG2_DPEN_125 := $(patsubst %, render-octihanan/125/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 
+RNDR_OCTIHANAN2_DEG2_DPEN_75 := $(patsubst %, render-octihanan2/75/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_OCTIHANAN2_DEG2_DPEN_100 := $(patsubst %, render-octihanan2/100/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_OCTIHANAN2_DEG2_DPEN_125 := $(patsubst %, render-octihanan2/125/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+
 RNDR_PORTHORAD_DEG2_DPEN_75 := $(patsubst %, render-porthorad/75/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 RNDR_PORTHORAD_DEG2_DPEN_100 := $(patsubst %, render-porthorad/100/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 RNDR_PORTHORAD_DEG2_DPEN_125 := $(patsubst %, render-porthorad/125/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 
-.PHONY: render render-octihanan render-porthoradial render-base render-deg2 render-deg2-dpen ilp-base ilp-deg2 ilp ilp-solve-base ilp-solve-deg2 ilp-solve clean list all help
+.PHONY: render render-octihanan render-octihanan2 render-porthoradial render-base render-deg2 render-deg2-dpen ilp-base ilp-deg2 ilp ilp-solve-base ilp-solve-deg2 ilp-solve clean list all help
 
 .SECONDARY:
 
@@ -349,6 +358,52 @@ render-octihanan/125/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
 
 	@printf "[%s] Done.\n" "$$(date -Is)"
 
+## octihanan2 with deg 2
+
+render-octihanan2/75/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "75%" --hanan-iters 2 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+render-octihanan2/100/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "100%" --hanan-iters 2 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+render-octihanan2/125/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "125%" --hanan-iters 2 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## octihanan2 with deg 2 + density pen
+
+render-octihanan2/75/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "75%" --hanan-iters 2 --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+render-octihanan2/100/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "100%" --hanan-iters 2   --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+render-octihanan2/125/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "125%" --hanan-iters 2 --density-pen 10  --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
 ## pseudo orthoradial with deg 2
 
 render-porthorad/75/deg2/%/res_$(METHOD).json: datasets/%.json
@@ -406,6 +461,8 @@ render-chulloctilinear-deg2: $(RNDR_CHULLOCTILINEAR_DEG2_75) $(RNDR_CHULLOCTILIN
 
 render-octihanan-deg2: $(RNDR_OCTIHANAN_DEG2_75) $(RNDR_OCTIHANAN_DEG2_100) $(RNDR_OCTIHANAN_DEG2_125)
 
+render-octihanan2-deg2: $(RNDR_OCTIHANAN2_DEG2_75) $(RNDR_OCTIHANAN2_DEG2_100) $(RNDR_OCTIHANAN2_DEG2_125)
+
 render-porthoradial-deg2: $(RNDR_PORTHORAD_DEG2_75) $(RNDR_PORTHORAD_DEG2_100) $(RNDR_PORTHORAD_DEG2_125)
 
 render-quadtree-deg2-dpen: $(RNDR_QUADTREE_DEG2_DPEN_75) $(RNDR_QUADTREE_DEG2_DPEN_100) $(RNDR_QUADTREE_DEG2_DPEN_125)
@@ -415,6 +472,8 @@ render-hexalinear-deg2-dpen: $(RNDR_HEXALINEAR_DEG2_DPEN_75) $(RNDR_HEXALINEAR_D
 render-chulloctilinear-deg2-dpen: $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_75) $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_100) $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_125)
 
 render-octihanan-deg2-dpen: $(RNDR_OCTIHANAN_DEG2_DPEN_75) $(RNDR_OCTIHANAN_DEG2_DPEN_100) $(RNDR_OCTIHANAN_DEG2_DPEN_125)
+
+render-octihanan2-deg2-dpen: $(RNDR_OCTIHANAN2_DEG2_DPEN_75) $(RNDR_OCTIHANAN2_DEG2_DPEN_100) $(RNDR_OCTIHANAN2_DEG2_DPEN_125)
 
 render-porthoradial-deg2-dpen: $(RNDR_PORTHORAD_DEG2_DPEN_75) $(RNDR_PORTHORAD_DEG2_DPEN_100) $(RNDR_PORTHORAD_DEG2_DPEN_125)
 

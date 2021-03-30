@@ -10,7 +10,7 @@
       },
       "properties": {
         "id": "0x143f300",
-        "station_id": "at:49:299:0:10",
+        "station_id": 100,
         "station_label": "Aspernstraße"
       },
       "type": "Feature"

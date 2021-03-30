@@ -38,11 +38,9 @@ The following parameters are read by the Makefile:
 
 **`OCTI`**: Path to the octi binary.
 
-**`GUROBI_THREADS`** `(def=8)`: Number of threads gurobi should use.
+**`ILP_TIMEOUT`** `(def=43200)`: Seconds after which the ILP solve will be cancelled (in seconds, default is 24 hours).
 
-**`GUROBI_TIMEOUT`** `(def=86400)`: Seconds after which the gurobi solve will be cancelled (in seconds, default is 24 hours).
-
-**`GUROBI_NODEFILE_DIR`** `(def=.)`: To save memory, gurobi writes nodes to the disk after a memory threshold is reached.
+**`ILP_CACHE_DIR`** `(def=.)`: If supported by the solver, cache directory
 
 ### Usage examples
 
@@ -55,3 +53,4 @@ Octilinearize the Freiburg dataset.
 **`make DATASETS="freiburg stuttgart" ilp`**
 Write ILPs for Freiburg and Stuttgart.
 
+**`make METHOD=ilp DATASETS="freiburg wien stuttgart berlin sydney" render-deg2 render-chulloctilinear-deg2 render-quadtree-deg2 render-octihanan-deg2 render-octihanan2-deg2 render-hexalinear-deg2 render-porthoradial-deg2`

@@ -4,7 +4,6 @@
 
 OCTI = /home/patrick/repos/loom/build/octi
 ILP_TIMEOUT = 43200 # timeout = 12 hours
-#ILP_TIMEOUT = 300 # timeout = 5 minutes
 ILP_CACHE_DIR = /tmp
 METHOD = heur
 

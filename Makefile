@@ -1,3 +1,7 @@
+# (C) 2019 University of Freiburg
+# Chair of Algorithms and Data Structures
+# Authors: Patrick Brosi (brosi@cs.uni-freiburg.de)
+
 OCTI = octi
 
 RESULTS_DIR := results
@@ -225,9 +229,6 @@ RNDR_HEXALINEAR_DEG2 = $(RNDR_HEXALINEAR_DEG2_HEUR_75) $(RNDR_HEXALINEAR_DEG2_HE
 RNDR_PORTHORAD_DEG2 = $(RNDR_PORTHORAD_DEG2_HEUR_75) $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_HEUR_125) $(RNDR_PORTHORAD_DEG2_ILP_75) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_PORTHORAD_DEG2_ILP_125)
 
 
-
-
-
 # special graphs with deg 2 and density penalty, heur
 
 ## 75
@@ -298,6 +299,9 @@ $(RESULTS_DIR)/octilinear/75/deg2/%/res_heur.json:
 $(RESULTS_DIR)/octilinear/100/deg2/%/res_heur.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
 
+$(RESULTS_DIR)/octilinear/100/deg2-glpk/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
 $(RESULTS_DIR)/octilinear/125/deg2/%/res_heur.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
 
@@ -309,6 +313,47 @@ $(RESULTS_DIR)/octilinear/100/deg2-dpen/%/res_heur.json:
 
 $(RESULTS_DIR)/octilinear/125/deg2-dpen/%/res_heur.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+
+
+
+$(RESULTS_DIR)/octilinear/75/base/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/base/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/125/base/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/octilinear/75/deg2/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+# with explicit solvers
+$(RESULTS_DIR)/octilinear/100/deg2-gurobi/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=gurobi METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2-cbc/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=cbc METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2-glpk/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=glpk METHOD=ilp GRIDSIZE=100 $@
+
+
+$(RESULTS_DIR)/octilinear/125/deg2/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/octilinear/75/deg2-dpen/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2-dpen/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/125/deg2-dpen/%/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
 
 
 render-quadtree-deg2: $(RNDR_QUADTREE_DEG2)

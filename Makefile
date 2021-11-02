@@ -1,209 +1,315 @@
-# (C) 2019 University of Freiburg
-# Chair of Algorithms and Data Structures
-# Authors: Patrick Brosi (brosi@cs.uni-freiburg.de)
+OCTI = octi
 
-OCTI = /home/patrick/repos/loom/build/octi
+RESULTS_DIR := results
+TABLES_DIR := tables
+
+OVERALL_TIMEOUT := 43200 # = 12 hours, timeout after which we abort and do not write a solution, in seconds
+
 ILP_TIMEOUT = 43200 # timeout = 12 hours
 ILP_CACHE_DIR = /tmp
-METHOD = heur
-GRIDSIZE = 100
 
-GLOB_ARGS = --stats -o $(METHOD) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-time-limit $(ILP_TIMEOUT) --restr-loc-search
+GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DIR) RESULTS_DIR=$(RESULTS_DIR)
 
 DATASETS = $(basename $(notdir $(wildcard datasets/*.json)))
 
-# standard graph
+# standard graph, heur
 
-RNDR_DEG2 := $(patsubst %, render/octilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+## 75
+RNDR_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octilinear/75/deg2/%/res_heur.json, $(DATASETS))
 
-RNDR_DEG2_DPEN := $(patsubst %, render/octilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octilinear/75/deg2-dpen/%/res_heur.json, $(DATASETS))
 
-RNDR := $(patsubst %, render/octilinear/$(GRIDSIZE)/base/%/res_$(METHOD).json, $(DATASETS))
+RNDR_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octilinear/75/base/%/res_heur.json, $(DATASETS))
 
-# special graphs without deg 2
+## 100
+RNDR_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octilinear/100/deg2/%/res_heur.json, $(DATASETS))
 
-RNDR_HEXALINEAR := $(patsubst %, render/hexalinear/$(GRIDSIZE)/%/res_$(METHOD).json, $(DATASETS))
+RNDR_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octilinear/100/deg2-dpen/%/res_heur.json, $(DATASETS))
 
-RNDR_QUADTREE := $(patsubst %, render/quadtree/$(GRIDSIZE)/%/res_$(METHOD).json, $(DATASETS))
+RNDR_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octilinear/100/base/%/res_heur.json, $(DATASETS))
 
-RNDR_CHULLOCTILINEAR := $(patsubst %, render/chulloctilinear/$(GRIDSIZE)/%/res_$(METHOD).json, $(DATASETS))
+## 125
+RNDR_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octilinear/125/deg2/%/res_heur.json, $(DATASETS))
 
-RNDR_OCTIHANAN := $(patsubst %, render/octihanan/$(GRIDSIZE)/%/res_$(METHOD).json, $(DATASETS))
+RNDR_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octilinear/125/deg2-dpen/%/res_heur.json, $(DATASETS))
 
-RNDR_PORTHORAD := $(patsubst %, render/porthorad/$(GRIDSIZE)/%/res_$(METHOD).json, $(DATASETS))
+RNDR_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octilinear/125/base/%/res_heur.json, $(DATASETS))
 
-# special graphs with deg 2
 
-RNDR_HEXALINEAR_DEG2 := $(patsubst %, render/hexalinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+# standard graph, ILP
 
-RNDR_QUADTREE_DEG2 := $(patsubst %, render/quadtree/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+## 75
+RNDR_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/octilinear/75/deg2/%/res_ilp.json, $(DATASETS))
 
-RNDR_CHULLOCTILINEAR_DEG2 := $(patsubst %, render/chulloctilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+RNDR_ILP_75 := $(patsubst %, $(RESULTS_DIR)/octilinear/75/base/%/res_ilp.json, $(DATASETS))
 
-RNDR_OCTIHANAN_DEG2 := $(patsubst %, render/octihanan/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+## 100
+RNDR_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/octilinear/100/deg2/%/res_ilp.json, $(DATASETS))
 
-RNDR_OCTIHANAN2_DEG2 := $(patsubst %, render/octihanan2/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+RNDR_ILP_100 := $(patsubst %, $(RESULTS_DIR)/octilinear/100/base/%/res_ilp.json, $(DATASETS))
 
-RNDR_PORTHORAD_DEG2 := $(patsubst %, render/porthorad/$(GRIDSIZE)/deg2/%/res_$(METHOD).json, $(DATASETS))
+## 125
+RNDR_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/octilinear/125/deg2/%/res_ilp.json, $(DATASETS))
 
-# special graphs with deg 2 and density penalty
+RNDR_ILP_125 := $(patsubst %, $(RESULTS_DIR)/octilinear/125/base/%/res_ilp.json, $(DATASETS))
 
-RNDR_HEXALINEAR_DEG2_DPEN := $(patsubst %, render/hexalinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 
-RNDR_QUADTREE_DEG2_DPEN := $(patsubst %, render/quadtree/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_BASE :=  $(RNDR_HEUR_75) $(RNDR_HEUR_100) $(RNDR_HEUR_125) $(RNDR_ILP_75) $(RNDR_ILP_100) $(RNDR_ILP_125)
 
-RNDR_CHULLOCTILINEAR_DEG2_DPEN := $(patsubst %, render/chulloctilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_DEG2 := $(RNDR_DEG2_HEUR_75) $(RNDR_DEG2_HEUR_100) $(RNDR_DEG2_HEUR_125) $(RNDR_DEG2_ILP_75) $(RNDR_DEG2_ILP_100) $(RNDR_DEG2_ILP_125)
 
-RNDR_OCTIHANAN_DEG2_DPEN := $(patsubst %, render/octihanan/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+RNDR_DEG2_DPEN := $(RNDR_DEG2_DPEN_HEUR_75) $(RNDR_DEG2_DPEN_HEUR_100) $(RNDR_DEG2_DPEN_HEUR_125) $(RNDR_HEUR_125)
 
-RNDR_OCTIHANAN2_DEG2_DPEN := $(patsubst %, render/octihanan2/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
 
-RNDR_PORTHORAD_DEG2_DPEN := $(patsubst %, render/porthorad/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json, $(DATASETS))
+# special graphs without deg 2, heur
 
-.PHONY: render render-octihanan render-octihanan2 render-porthoradial render-base render-deg2 render-deg2-dpen ilp-base ilp-deg2 ilp ilp-solve-base ilp-solve-deg2 ilp-solve clean list all help
+## 75
+RNDR_HEXALINEAR_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/hexalinear/75/%/res_heur.json, $(DATASETS))
 
-.SECONDARY:
+RNDR_QUADTREE_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/quadtree/75/%/res_heur.json, $(DATASETS))
 
+RNDR_CHULLOCTILINEAR_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/75/%/res_heur.json, $(DATASETS))
 
-# octilinearize evaluation inputs
+RNDR_OCTIHANAN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octihanan/75/%/res_heur.json, $(DATASETS))
 
-## with deg 2 + density
+RNDR_PORTHORAD_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/porthorad/75/%/res_heur.json, $(DATASETS))
 
-render/octilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --deg2-heur --density-pen 10  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+## 100
+RNDR_HEXALINEAR_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/hexalinear/100/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_QUADTREE_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/quadtree/100/%/res_heur.json, $(DATASETS))
 
-## with deg 2
+RNDR_CHULLOCTILINEAR_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/100/%/res_heur.json, $(DATASETS))
 
-render/octilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_OCTIHANAN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octihanan/100/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_PORTHORAD_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/porthorad/100/%/res_heur.json, $(DATASETS))
 
-## without deg 2
+## 125
+RNDR_HEXALINEAR_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/hexalinear/125/%/res_heur.json, $(DATASETS))
 
-render/octilinear/$(GRIDSIZE)/base/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%"  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_QUADTREE_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/quadtree/125/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/125/%/res_heur.json, $(DATASETS))
 
-## hexalinear with deg 2
+RNDR_OCTIHANAN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octihanan/125/%/res_heur.json, $(DATASETS))
 
-render/hexalinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=hexalinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_PORTHORAD_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/porthorad/125/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
 
-## hexalinear with deg 2 + density pen
+# special graphs without deg 2, ILP
 
-render/hexalinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=hexalinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+## 75
+RNDR_HEXALINEAR_ILP_75 := $(patsubst %, $(RESULTS_DIR)/hexalinear/75/%/res_ilp.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_QUADTREE_ILP_75 := $(patsubst %, $(RESULTS_DIR)/quadtree/75/%/res_ilp.json, $(DATASETS))
 
-## convex hull octilinear with deg 2
+RNDR_CHULLOCTILINEAR_ILP_75 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/75/%/res_ilp.json, $(DATASETS))
 
-render/chulloctilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=chulloctilinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_OCTIHANAN_ILP_75 := $(patsubst %, $(RESULTS_DIR)/octihanan/75/%/res_ilp.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_PORTHORAD_ILP_75 := $(patsubst %, $(RESULTS_DIR)/porthorad/75/%/res_ilp.json, $(DATASETS))
 
-## convex hull with deg 2 + density pen
+## 100
+RNDR_HEXALINEAR_ILP_100 := $(patsubst %, $(RESULTS_DIR)/hexalinear/100/%/res_ilp.json, $(DATASETS))
 
-render/chulloctilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=chulloctilinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_QUADTREE_ILP_100 := $(patsubst %, $(RESULTS_DIR)/quadtree/100/%/res_ilp.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_ILP_100 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/100/%/res_ilp.json, $(DATASETS))
 
-## quad tree with deg 2
+RNDR_OCTIHANAN_ILP_100 := $(patsubst %, $(RESULTS_DIR)/octihanan/100/%/res_ilp.json, $(DATASETS))
 
-render/quadtree/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=quadtree --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_PORTHORAD_ILP_100 := $(patsubst %, $(RESULTS_DIR)/porthorad/100/%/res_ilp.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+## 125
+RNDR_HEXALINEAR_ILP_125 := $(patsubst %, $(RESULTS_DIR)/hexalinear/125/%/res_ilp.json, $(DATASETS))
 
-## convex hull with deg 2 + density pen
+RNDR_QUADTREE_ILP_125 := $(patsubst %, $(RESULTS_DIR)/quadtree/125/%/res_ilp.json, $(DATASETS))
 
-render/quadtree/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=quadtree --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_ILP_125 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/125/%/res_ilp.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_OCTIHANAN_ILP_125 := $(patsubst %, $(RESULTS_DIR)/octihanan/125/%/res_ilp.json, $(DATASETS))
 
-## octihanan with deg 2
+RNDR_PORTHORAD_ILP_125 := $(patsubst %, $(RESULTS_DIR)/porthorad/125/%/res_ilp.json, $(DATASETS))
 
-render/octihanan/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+# special graphs with deg 2, heur
 
-## octihanan with deg 2 + density pen
+## 75
+RNDR_HEXALINEAR_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/hexalinear/75/deg2/%/res_heur.json, $(DATASETS))
 
-render/octihanan/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_QUADTREE_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/quadtree/75/deg2/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/75/deg2/%/res_heur.json, $(DATASETS))
 
-## octihanan2 with deg 2
+RNDR_OCTIHANAN_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octihanan/75/deg2/%/res_heur.json, $(DATASETS))
 
-render/octihanan2/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --hanan-iters 2 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_OCTIHANAN2_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octihanan2/75/deg2/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_PORTHORAD_DEG2_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/porthorad/75/deg2/%/res_heur.json, $(DATASETS))
 
-## octihanan2 with deg 2 + density pen
+## 100
+RNDR_HEXALINEAR_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/hexalinear/100/deg2/%/res_heur.json, $(DATASETS))
 
-render/octihanan2/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --hanan-iters 2 --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_QUADTREE_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/quadtree/100/deg2/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/100/deg2/%/res_heur.json, $(DATASETS))
 
-## pseudo orthoradial with deg 2
+RNDR_OCTIHANAN_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octihanan/100/deg2/%/res_heur.json, $(DATASETS))
 
-render/porthorad/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_OCTIHANAN2_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octihanan2/100/deg2/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_PORTHORAD_DEG2_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/porthorad/100/deg2/%/res_heur.json, $(DATASETS))
 
-## porthoradial with deg 2 + density pen
+## 125
+RNDR_HEXALINEAR_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/hexalinear/125/deg2/%/res_heur.json, $(DATASETS))
 
-render/porthorad/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
-	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
-	@mkdir -p $(dir $@)
-	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+RNDR_QUADTREE_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/quadtree/125/deg2/%/res_heur.json, $(DATASETS))
 
-	@printf "[%s] Done.\n" "$$(date -Is)"
+RNDR_CHULLOCTILINEAR_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/125/deg2/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octihanan/125/deg2/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octihanan2/125/deg2/%/res_heur.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/porthorad/125/deg2/%/res_heur.json, $(DATASETS))
+
+
+# special graphs with deg 2, ILP
+
+## 75
+RNDR_HEXALINEAR_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/hexalinear/75/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/quadtree/75/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/75/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/octihanan/75/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/octihanan2/75/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_ILP_75 := $(patsubst %, $(RESULTS_DIR)/porthorad/75/deg2/%/res_ilp.json, $(DATASETS))
+
+## 100
+RNDR_HEXALINEAR_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/hexalinear/100/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/quadtree/100/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/100/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/octihanan/100/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/octihanan2/100/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_ILP_100 := $(patsubst %, $(RESULTS_DIR)/porthorad/100/deg2/%/res_ilp.json, $(DATASETS))
+
+## 125
+RNDR_HEXALINEAR_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/hexalinear/125/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/quadtree/125/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/125/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/octihanan/125/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/octihanan2/125/deg2/%/res_ilp.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_ILP_125 := $(patsubst %, $(RESULTS_DIR)/porthorad/125/deg2/%/res_ilp.json, $(DATASETS))
+
+
+RNDR_PORTHORAD_DEG2 = $(RNDR_PORTHORAD_DEG2_HEUR_75) $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_HEUR_125) $(RNDR_PORTHORAD_DEG2_ILP_75) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_PORTHORAD_DEG2_ILP_125)
+RNDR_CHULLOCTILINEAR_DEG2 = $(RNDR_CHULLOCTILINEAR_DEG2_HEUR_75) $(RNDR_CHULLOCTILINEAR_DEG2_HEUR_100) $(RNDR_CHULLOCTILINEAR_DEG2_HEUR_125) $(RNDR_CHULLOCTILINEAR_DEG2_ILP_75) $(RNDR_CHULLOCTILINEAR_DEG2_ILP_100) $(RNDR_CHULLOCTILINEAR_DEG2_ILP_125)
+RNDR_OCTIHANAN_DEG2 = $(RNDR_OCTIHANAN_DEG2_HEUR_75) $(RNDR_OCTIHANAN_DEG2_HEUR_100) $(RNDR_OCTIHANAN_DEG2_HEUR_125) $(RNDR_OCTIHANAN_DEG2_ILP_75) $(RNDR_OCTIHANAN_DEG2_ILP_100) $(RNDR_OCTIHANAN_DEG2_ILP_125)
+RNDR_QUADTREE_DEG2 = $(RNDR_QUADTREE_DEG2_HEUR_75) $(RNDR_QUADTREE_DEG2_HEUR_100) $(RNDR_QUADTREE_DEG2_HEUR_125) $(RNDR_QUADTREE_DEG2_ILP_75) $(RNDR_QUADTREE_DEG2_ILP_100) $(RNDR_QUADTREE_DEG2_ILP_125)
+RNDR_HEXALINEAR_DEG2 = $(RNDR_HEXALINEAR_DEG2_HEUR_75) $(RNDR_HEXALINEAR_DEG2_HEUR_100) $(RNDR_HEXALINEAR_DEG2_HEUR_125) $(RNDR_HEXALINEAR_DEG2_ILP_75) $(RNDR_HEXALINEAR_DEG2_ILP_100) $(RNDR_HEXALINEAR_DEG2_ILP_125)
+RNDR_PORTHORAD_DEG2 = $(RNDR_PORTHORAD_DEG2_HEUR_75) $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_HEUR_125) $(RNDR_PORTHORAD_DEG2_ILP_75) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_PORTHORAD_DEG2_ILP_125)
+
+
+
+
+
+# special graphs with deg 2 and density penalty, heur
+
+## 75
+
+RNDR_HEXALINEAR_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/hexalinear/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/quadtree/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octihanan/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/octihanan2/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_DPEN_HEUR_75 := $(patsubst %, $(RESULTS_DIR)/porthorad/75/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+## 100
+
+RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/hexalinear/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/quadtree/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octihanan/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/octihanan2/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_DPEN_HEUR_100 := $(patsubst %, $(RESULTS_DIR)/porthorad/100/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+
+## 125
+
+RNDR_HEXALINEAR_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/hexalinear/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_QUADTREE_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/quadtree/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/chulloctilinear/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octihanan/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_OCTIHANAN2_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/octihanan2/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_DPEN_HEUR_125 := $(patsubst %, $(RESULTS_DIR)/porthorad/125/deg2-dpen/%/res_heur.json, $(DATASETS))
+
+RNDR_PORTHORAD_DEG2_DPEN = $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_75) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_125)
+RNDR_CHULLOCTILINEAR_DEG2_DPEN = $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_75) $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_100) $(RNDR_CHULLOCTILINEAR_DEG2_DPEN_HEUR_125)
+RNDR_OCTIHANAN_DEG2_DPEN = $(RNDR_OCTIHANAN_DEG2_DPEN_HEUR_75) $(RNDR_OCTIHANAN_DEG2_DPEN_HEUR_100) $(RNDR_OCTIHANAN_DEG2_DPEN_HEUR_125)
+RNDR_QUADTREE_DEG2_DPEN = $(RNDR_QUADTREE_DEG2_DPEN_HEUR_75) $(RNDR_QUADTREE_DEG2_DPEN_HEUR_100) $(RNDR_QUADTREE_DEG2_DPEN_HEUR_125)
+RNDR_HEXALINEAR_DEG2_DPEN = $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_75) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_125)
+RNDR_PORTHORAD_DEG2_DPEN = $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_75) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_125)
 
 list:
 	@echo $(DATASETS) | tr ' ' '\n'
+
+$(RESULTS_DIR)/octilinear/75/base/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/base/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/125/base/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/octilinear/75/deg2/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/125/deg2/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/octilinear/75/deg2-dpen/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/octilinear/100/deg2-dpen/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/octilinear/125/deg2-dpen/%/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
 
 render-quadtree-deg2: $(RNDR_QUADTREE_DEG2)
 
@@ -233,17 +339,25 @@ render-deg2-dpen: $(RNDR_DEG2_DPEN)
 
 render-deg2: $(RNDR_DEG2)
 
-render-base: $(RNDR)
+render-base: $(RNDR_BASE)
 
-render: render-deg2-dpen render-deg2 render-base
+render: render-deg2-dpen render-deg2 render-base render-quadtree-deg2 render-hexalinear-deg2 render-chulloctilinear-deg2 render-octihanan-deg2 render-octihanan2-deg2 render-porthoradial-deg2 render-quadtree-deg2-dpen render-hexalinear-deg2-dpen render-chulloctilinear-deg2-dpen render-octihanan-deg2-dpen render-octihanan2-deg2-dpen render-porthoradial-deg2-dpen
 
 all: render
 
 help:
-	cat README.md
+	@cat README.md
+
+check:
+	@echo "glpk version:  " `glpsol --version | head -n1 | cut -d'v' -f3`
+	@echo "CBC version:   " `echo "x" | cbc | head -n2 | tail -n1 | cut -d' ' -f2`
+	@echo "gurobi version:" `gurobi_cl --version | head -n1 | cut -dv -f3 | cut -d' ' -f1`
+	@echo "gurobi license:"
+	@gurobi_cl --license
+	@echo "octi version:" `$(OCTI) --version`
+	@echo "results dir:" $(RESULTS_DIR)
+	@echo "timeout:" $(OVERALL_TIMEOUT)s
+	@echo "ILP cache dir:" $(ILP_CACHE_DIR)
 
 clean:
-	rm -rf ilp
-	rm -rf render
-	rm -rf render-orthorad
-	rm -rf solver_runs
+	rm -rf $(RESULTS_DIR)

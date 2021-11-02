@@ -38,19 +38,16 @@ The following parameters are read by the Makefile:
 
 **`OCTI`**: Path to the octi binary.
 
-**`ILP_TIMEOUT`** `(def=43200)`: Seconds after which the ILP solve will be cancelled (in seconds, default is 24 hours).
+**`ILP_TIMEOUT`** `(=43200)`: Seconds after which the ILP solve will be cancelled (in seconds, default is 12 hours).
 
-**`ILP_CACHE_DIR`** `(def=.)`: If supported by the solver, cache directory
+**`ILP_CACHE_DIR`** `(=.)`: If supported by the solver, cache directory
+
+**`ILP_SOLVER** `(=gurobi)`: The ILP solver to use.
 
 ### Usage examples
-
-**`make all`**
-Do everything, this will take a long time.
 
 **`make DATASETS=freiburg render`**
 Octilinearize the Freiburg dataset.
 
-**`make DATASETS="freiburg stuttgart" ilp`**
-Write ILPs for Freiburg and Stuttgart.
-
 **`make METHOD=ilp DATASETS="freiburg wien stuttgart berlin sydney" render-deg2 render-chulloctilinear-deg2 render-quadtree-deg2 render-octihanan-deg2 render-octihanan2-deg2 render-hexalinear-deg2 render-porthoradial-deg2`
+Render all test datasets using all ILP methods (will take a long time)

@@ -1,0 +1,159 @@
+# (C) 2019 University of Freiburg
+# Chair of Algorithms and Data Structures
+# Authors: Patrick Brosi (brosi@cs.uni-freiburg.de)
+
+OCTI = octi
+ILP_TIMEOUT = 43200 # timeout = 12 hours
+ILP_CACHE_DIR = /tmp
+METHOD = heur
+ILP_SOLVER = gurobi
+GRIDSIZE = 100
+
+RESULTS_DIR := results
+OVERALL_TIMEOUT := 43200 # = 12 hours, timeout after which we abort and do not write a solution, in seconds
+
+GLOB_ARGS = --stats -o $(METHOD) --ilp-solver $(ILP_SOLVER) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-time-limit $(ILP_TIMEOUT) --restr-loc-search
+
+.PHONY: render render-octihanan render-octihanan2 render-porthoradial render-base render-deg2 render-deg2-dpen ilp-base ilp-deg2 ilp ilp-solve-base ilp-solve-deg2 ilp-solve clean list all help
+
+.SECONDARY:
+
+
+# octilinearize evaluation inputs
+
+## with deg 2 + density
+
+$(RESULTS_DIR)/octilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --deg2-heur --density-pen 10  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## with deg 2
+
+$(RESULTS_DIR)/octilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## without deg 2
+
+$(RESULTS_DIR)/octilinear/$(GRIDSIZE)/base/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%"  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## hexalinear with deg 2
+
+$(RESULTS_DIR)/hexalinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=hexalinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## hexalinear with deg 2 + density pen
+
+$(RESULTS_DIR)/hexalinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=hexalinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## convex hull octilinear with deg 2
+
+$(RESULTS_DIR)/chulloctilinear/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=chulloctilinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## convex hull with deg 2 + density pen
+
+$(RESULTS_DIR)/chulloctilinear/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=chulloctilinear --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## quad tree with deg 2
+
+$(RESULTS_DIR)/quadtree/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=quadtree --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## convex hull with deg 2 + density pen
+
+$(RESULTS_DIR)/quadtree/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=quadtree --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## octihanan with deg 2
+
+$(RESULTS_DIR)/octihanan/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## octihanan with deg 2 + density pen
+
+$(RESULTS_DIR)/octihanan/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## octihanan2 with deg 2
+
+$(RESULTS_DIR)/octihanan2/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --hanan-iters 2 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## octihanan2 with deg 2 + density pen
+
+$(RESULTS_DIR)/octihanan2/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --hanan-iters 2 --density-pen 10 --base-graph=octihanan --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## pseudo orthoradial with deg 2
+
+$(RESULTS_DIR)/porthorad/$(GRIDSIZE)/deg2/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+## porthoradial with deg 2 + density pen
+
+$(RESULTS_DIR)/porthorad/$(GRIDSIZE)/deg2-dpen/%/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
+
+

@@ -1,0 +1,41 @@
+\documentclass[a4paper,12pt,twoside]{book}
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[labelformat=simple,labelfont=bf]{caption}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\newcommand\todo[1]{\textcolor{blue}{[TODO: #1]}}
+\newcommand\TODO[1]{\textcolor{blue}{\small [TODO: #1]}}
+
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\DeclareMathOperator*{\TED}{TED}
+\DeclareMathOperator*{\lev}{lev}
+\def\Hms{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize ms}}
+\def\Hs{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize s}}
+\def\Hk{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize k}}
+\def\Hm{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize m}}
+\def\HM{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize M}}
+\def\Hh{\makebox[1.6mm][l]{\hspace{0.2mm}\footnotesize h}}
+\def\Hhline{\\[.7mm]\hline}
+
+\def\Hprom{\makebox[2.25mm][l]{\textperthousand}}
+\def\Hhline{\\[.7mm]\hline}
+\def\Hsci#1#2{$#1$\hspace{0.2mm}{\makebox[5.8mm][l]{\scriptsize$\times10^{#2}$}}}
+\def\Hdimh{rows\hspace{0.3mm}{\scriptsize$\times$}\hspace{0.3mm}cols}
+\def\Hdim#1#2{#1\hspace{0.1mm}{\scriptsize$\times$}\hspace{0.1mm}#2}
+\def\Htglpk{GLPK}
+\def\Htcbc{CBC}
+\def\Htgo{GU}
+\def\Hlong{---\phantom{\Hs}}
+\def\Hno{---}
+\def\Hgr{$>$}
+
+\begin{document}

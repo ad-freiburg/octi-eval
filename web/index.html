@@ -618,7 +618,7 @@ footer {
         document.getElementById("stats-octi").innerHTML = "";
         return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', '../results/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/"+ name +"/res_" + method + ".json");
+          xhr.open('GET', '../' + name + '/results/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/res_" + method + ".json");
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.responseType = 'json';
           xhr.onload = function() {
@@ -656,7 +656,7 @@ footer {
           };
           xhr.send();
         });
-      }  
+      }
 
       function addStatRow(tbl, as, bs) {
         var row = tbl.insertRow();
@@ -667,7 +667,7 @@ footer {
       }
 
       function getStatTableRes(res) {
-        var props = res["properties"];
+		  var props = res["properties"]["statistics"];
         var tbl = document.createElement("table");
         addStatRow(tbl, "gridgraph size: ", fmtNum(props["gridgraph-size"]["nodes"]) + " nodes, " + fmtNum(props["gridgraph-size"]["edges"]) + " edges");
 
@@ -689,9 +689,9 @@ footer {
         addStatRow(tbl, "pen-density: ", props["pens"]["density-pen"]);
 
         addStatRow(tbl, "# processors", props["procs"]);
-        addStatRow(tbl, "target", props["scores"]["total_score"].toFixed(2));
+        addStatRow(tbl, "target", props["scores"]["total-score"].toFixed(2));
         addStatRow(tbl, "topo-violations", props["scores"]["topo-violations"]);
-        addStatRow(tbl, "time", props["time_ms"].toFixed(2) + " ms");
+        addStatRow(tbl, "time", props["time-ms"].toFixed(2) + " ms");
         addStatRow(tbl, "created", new Date(props["timestamp"] * 1000).toLocaleString());
 
         return tbl;

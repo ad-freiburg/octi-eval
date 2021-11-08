@@ -121,11 +121,11 @@ def format_int(n):
     return "%.1f\\HB" % (n / 1000000000)
 
 
-def format_float(n):
+def format_float(n, raw=False):
     if n is None:
         return "---"
 
-    if n < 100:
+    if raw or n < 100:
         return "%.1f" % n
 
     if n < 1000000:
@@ -285,6 +285,99 @@ def tbl_ilp_solve_deg2(results):
 
     return ret
 
+def tbl_approx_solve_deg2(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Final objective values of our ILP (LP-2) and our approx. approach (A-2), both with deg-2 heuristic for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. The approximation error is given as $\\delta$. Scores of --- mean no solution could be found. If no optimal LP solution was found in under 12 hours, we give the best bound. \\label{TBL:eval_approx_deg2}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r}\n"
+    ret += "     & \\multicolumn{3}{c}{\\footnotesize $D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{\\footnotesize $D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{\\footnotesize $D=1.25 \\cdot \\bar d$} \\\\\n"
+    ret += "      \\cline{2-4} \\cline{6-8} \\cline{10-12}  \\\\[-2ex] \\toprule\n"
+    ret += "        & LP-2 & A-2 & $\\delta$ & & LP-2 & A-2 & $\\delta$ & & LP-2 & A-2 & $\\delta$  \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        ilp_score_75 = get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "scores", "total-score"])
+        heur_score_75 = get(results[dataset_id], ["heur", "octilinear", "75", "deg2", "scores", "total-score"])
+        err_75 = None
+        if ilp_score_75 is not None and heur_score_75 is not None:
+            err_75 = (heur_score_75  - ilp_score_75) / ilp_score_75
+
+        ilp_score_100 = get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"])
+        heur_score_100 = get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "scores", "total-score"])
+        err_100 = None
+        if ilp_score_100 is not None and heur_score_100 is not None:
+            err_100 = (heur_score_100  - ilp_score_100) / ilp_score_100
+
+        ilp_score_125 = get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "scores", "total-score"])
+        heur_score_125 = get(results[dataset_id], ["heur", "octilinear", "125", "deg2", "scores", "total-score"])
+        err_125 = None
+        if ilp_score_125 is not None and heur_score_125 is not None:
+            err_125 = (heur_score_125  - ilp_score_125) / ilp_score_125
+
+
+        ret += "   %s  & %s  & %s  & %s\\%% && %s & %s  & %s\\%% && %s  & %s & %s\\%%   \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                format_float(ilp_score_75, True),
+                format_float(heur_score_75, True),
+                format_float(err_75),
+                format_float(ilp_score_100, True),
+                format_float(heur_score_100, True),
+                format_float(err_100),
+                format_float(ilp_score_125, True),
+                format_float(heur_score_125, True),
+                format_float(err_125))
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
+def tbl_time_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{TODO \\label{TBL:solvetimes}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r}\n"
+    ret += "    \\toprule  & LP & A & its. & LP-2 & A-2 & its. & \\textbf{A-2+D} & its. \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        ret += "   %s  & %s  & %s & %s & %s  & %s & %s & \\textbf{%s} & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "solve-time"])),
+                format_msecs(get(results[dataset_id], ["heur", "octilinear", "100", "base", "time-ms"])),
+                format_int(get(results[dataset_id], ["heur", "octilinear", "100", "base", "iterations"])),
+                format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                format_msecs(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "time-ms"])),
+                format_int(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "iterations"])),
+                format_msecs(get(results[dataset_id], ["heur", "octilinear", "100", "deg2-dpen", "time-ms"])),
+                format_int(get(results[dataset_id], ["heur", "octilinear", "100", "deg2-dpen", "iterations"]))
+                )
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
 
 def bold(s):
     return "\\textbf{" + s + "}"
@@ -314,6 +407,15 @@ def main():
 
     if sys.argv[1] == "ilp-solve-raw":
         print(tbl_ilp_solve_raw(results))
+
+    if sys.argv[1] == "ilp-solve-deg2":
+        print(tbl_ilp_solve_deg2(results))
+
+    if sys.argv[1] == "approx-solve-deg2":
+        print(tbl_approx_solve_deg2(results))
+
+    if sys.argv[1] == "time-comp":
+        print(tbl_time_comp(results))
 
 if __name__ == "__main__":
     main()

@@ -425,6 +425,32 @@ $(TABLES_DIR)/tbl-ilp-solve-deg2.pdf: $(TABLES_DIR)/tbl-ilp-solve-deg2.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-ilp-solve-deg2 $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
+$(TABLES_DIR)/tbl-approx-solve-deg2.tex: script/table.py script/template.tex $(RNDR_DEG2_ILP_75) $(RNDR_DEG2_ILP_100) $(RNDR_DEG2_ILP_125) $(RNDR_DEG2_HEUR_75) $(RNDR_DEG2_HEUR_100) $(RNDR_DEG2_HEUR_125)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py approx-solve-deg2 $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
+
+$(TABLES_DIR)/tbl-approx-solve-deg2.pdf: $(TABLES_DIR)/tbl-approx-solve-deg2.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-approx-solve-deg2 $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
+
+$(TABLES_DIR)/tbl-time-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_DPEN_HEUR_100) $(RNDR_DEG2_HEUR_100) $(RNDR_HEUR_100) #$(RNDR_DEG2_ILP_100) $(RNDR_ILP_100)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py time-comp $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
+
+$(TABLES_DIR)/tbl-time-comp.pdf: $(TABLES_DIR)/tbl-time-comp.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-time-comp $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
+
+
+
 help:
 	@cat README.md
 

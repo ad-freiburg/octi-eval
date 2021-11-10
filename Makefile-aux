@@ -18,6 +18,15 @@ GLOB_ARGS = --stats -o $(METHOD) --ilp-solver $(ILP_SOLVER) --ilp-cache-dir $(IL
 
 .SECONDARY:
 
+# heur with different edge orderings, only initial search
+
+$(RESULTS_DIR)/%/octilinear/$(GRIDSIZE)/deg2-init-$(EDGE_ORDER)/res_$(METHOD).json: datasets/%.json
+	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
+	@mkdir -p $(dir $@)
+	@# only do initial search, don't to local search
+	@$(OCTI) $(GLOB_ARGS) --edge-order $(EDGE_ORDER) --loc-search-max-iters=0 --grid-size "$(GRIDSIZE)%" --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+
+	@printf "[%s] Done.\n" "$$(date -Is)"
 
 # octilinearize evaluation inputs
 

@@ -14,6 +14,9 @@ GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DI
 
 DATASETS = $(basename $(notdir $(wildcard datasets/*.json)))
 
+# standard graph, edge ordering evaluation
+RNDR_DEG2_HEUR_100_ORDERING := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-num-lines/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-length/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-adj-nd-deg/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-adj-nd-ldeg/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-adj-nd-ldeg/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-growth-deg/res_heur.json, $(DATASETS)) $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-init-growth-ldeg/res_heur.json, $(DATASETS))
+
 # standard graph, heur
 
 ## 75
@@ -353,6 +356,25 @@ $(RESULTS_DIR)/%/octilinear/100/deg2-dpen/res_ilp.json:
 $(RESULTS_DIR)/%/octilinear/125/deg2-dpen/res_ilp.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
 
+# edge ordering
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-num-lines/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=num-lines METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-length/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=length METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-adj-nd-deg/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=adj-nd-deg METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-adj-nd-ldeg/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=adj-nd-ldeg METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-growth-deg/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=growth-deg METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-init-growth-ldeg/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=growth-ldeg METHOD=heur GRIDSIZE=100 $@
+
 
 render-quadtree-deg2: $(RNDR_QUADTREE_DEG2)
 
@@ -449,7 +471,17 @@ $(TABLES_DIR)/tbl-time-comp.pdf: $(TABLES_DIR)/tbl-time-comp.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-time-comp $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
+$(TABLES_DIR)/tbl-ordering-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_HEUR_100_ORDERING) $(RNDR_DEG2_HEUR_100)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py ordering-comp $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
 
+$(TABLES_DIR)/tbl-ordering-comp.pdf: $(TABLES_DIR)/tbl-ordering-comp.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-ordering-comp $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
 
 help:
 	@cat README.md

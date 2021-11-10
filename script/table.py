@@ -378,6 +378,59 @@ def tbl_time_comp(results):
 
     return ret
 
+def get_ordering_res(a, meth):
+    res = get(a, ["heur", "octilinear", "100", meth, "scores", "total-score"])
+    topo_vios =  get(a, ["heur", "octilinear", "100",meth, "scores", "topo-violations"])
+
+    if res == None:
+        return "---"
+
+    if topo_vios is not None and topo_vios > 0:
+        return "%d$w_\\infty$" % topo_vios
+
+    return format_float(res, True)
+
+
+def tbl_ordering_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Initial results of our heuristic approach \\emph{without} the local search phase using 6 different methods of ordering the input edges for rendering: by number of lines on the edge (num lines), by the length of the edge in the input graph, shortest first (length), by adjacent node degree (deg), by adjacent node line degree (ldeg), and growth-based approaches based on the node degree (gr-deg) and the line node degree (gr-ldeg). There is no clear winner.\\label{TBL:orderingcomp}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r }\n"
+    ret += "    \\toprule  & num lines & length &  $\\deg$ & ldeg & gr-$\\deg$ & gr-ldeg \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        methods = ["deg2-init-num-lines", "deg2-init-length", "deg2-init-adj-nd-deg", "deg2-init-adj-nd-ldeg", "deg2-init-growth-deg", "deg2-init-growth-ldeg"]
+
+        raw_scores = [get(results[dataset_id], ["heur", "octilinear", "100", meth, "scores", "total-score"]) for meth in methods]
+
+        best = sorted(range(len(raw_scores)), key=raw_scores.__getitem__)[0]
+
+        ret += "   %s  & %s  & %s & %s & %s  & %s & %s\\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                bold_if(get_ordering_res(results[dataset_id], methods[0]), best == 0),
+                bold_if(get_ordering_res(results[dataset_id], methods[1]), best == 1),
+                bold_if(get_ordering_res(results[dataset_id], methods[2]), best == 2),
+                bold_if(get_ordering_res(results[dataset_id], methods[3]), best == 3),
+                bold_if(get_ordering_res(results[dataset_id], methods[4]), best == 4),
+                bold_if(get_ordering_res(results[dataset_id], methods[5]), best == 5)
+                )
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
 
 def bold(s):
     return "\\textbf{" + s + "}"
@@ -416,6 +469,9 @@ def main():
 
     if sys.argv[1] == "time-comp":
         print(tbl_time_comp(results))
+
+    if sys.argv[1] == "ordering-comp":
+        print(tbl_ordering_comp(results))
 
 if __name__ == "__main__":
     main()

@@ -120,6 +120,12 @@ def format_int(n):
 
     return "%.1f\\HB" % (n / 1000000000)
 
+def format_perc(n):
+    if n is None:
+        return "---"
+
+    return "%.1f\\%%" % (n * 100)
+
 
 def format_float(n, raw=False):
     if n is None:
@@ -431,6 +437,62 @@ def tbl_ordering_comp(results):
 
     return ret
 
+def tbl_sparse_size_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Effects of various methods of base grid simplification on base grid graph size, given as number of nodes $|\\gV'|$ and number of edges $|\\gE'|$. Under `red.` we give the reduction of the number of edges when compared to the full extended grid\\label{TBL:gridsize_simple}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{2}{c}{Convex Hull} & & \\multicolumn{2}{c}{Quadtree}  & & \\multicolumn{2}{c}{OHG-1}   & & \\multicolumn{2}{c}{OHG-2} \\\\\n"
+    ret += " \\cline{2-3} \\cline{5-6} \\cline{8-9}  \\cline{11-12} \\\\[-2ex] \\toprule\n"
+    ret += "& $|\\gE'|$ & red. && $|\\gE'|$ & red. && $|\\gE'|$ & red.  && $|\\gE'|$ & red.  \\\\\\midrule\n"
+
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+    avg_chull = 0
+    avg_quad = 0
+    avg_hanan = 0
+    avg_hanan2 = 0
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        edges_full = get(results[dataset_id],["heur", "octilinear", "100", "deg2", "gridgraph-size", "edges"])
+
+        avg_chull += (edges_full - get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
+        avg_quad += (edges_full - get(results[dataset_id],["heur", "quadtree", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
+        avg_hanan += (edges_full - get(results[dataset_id],["heur", "octihanan", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
+        avg_hanan2 += (edges_full - get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
+
+        ret += "   %s &  %s  & %s && %s  & %s  &&  %s  & %s &&  %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                format_int(get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "gridgraph-size", "edges"])),
+                format_perc((edges_full - get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "gridgraph-size", "edges"])) / edges_full),
+                format_int(get(results[dataset_id],["heur", "quadtree", "100", "deg2", "gridgraph-size", "edges"])),
+                format_perc((edges_full - get(results[dataset_id],["heur", "quadtree", "100", "deg2", "gridgraph-size", "edges"])) / edges_full),
+                format_int(get(results[dataset_id],["heur", "octihanan", "100", "deg2", "gridgraph-size", "edges"])),
+                format_perc((edges_full - get(results[dataset_id],["heur", "octihanan", "100", "deg2", "gridgraph-size", "edges"])) / edges_full),
+                format_int(get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "gridgraph-size", "edges"])),
+                format_perc((edges_full - get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "gridgraph-size", "edges"])) / edges_full)
+                )
+
+
+    ret += "\\midrule"
+
+    ret += " avg &  & %s &&  & %s  &&  & %s &&  & %s \\\\\n" %(format_perc(avg_chull / len(sort)), format_perc(avg_quad / len(sort)), format_perc(avg_hanan / len(sort)), format_perc(avg_hanan2 / len(sort)))
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
+
 
 def bold(s):
     return "\\textbf{" + s + "}"
@@ -472,6 +534,9 @@ def main():
 
     if sys.argv[1] == "ordering-comp":
         print(tbl_ordering_comp(results))
+
+    if sys.argv[1] == "sparse-size-comp":
+        print(tbl_sparse_size_comp(results))
 
 if __name__ == "__main__":
     main()

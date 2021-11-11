@@ -333,17 +333,6 @@ $(RESULTS_DIR)/%/octilinear/75/deg2/res_ilp.json:
 $(RESULTS_DIR)/%/octilinear/100/deg2/res_ilp.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
 
-# with explicit solvers
-$(RESULTS_DIR)/%/octilinear/100/deg2-gurobi/res_ilp.json:
-	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=gurobi METHOD=ilp GRIDSIZE=100 $@
-
-$(RESULTS_DIR)/%/octilinear/100/deg2-cbc/res_ilp.json:
-	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=cbc METHOD=ilp GRIDSIZE=100 $@
-
-$(RESULTS_DIR)/%/octilinear/100/deg2-glpk/res_ilp.json:
-	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=glpk METHOD=ilp GRIDSIZE=100 $@
-
-
 $(RESULTS_DIR)/%/octilinear/125/deg2/res_ilp.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
 
@@ -355,6 +344,265 @@ $(RESULTS_DIR)/%/octilinear/100/deg2-dpen/res_ilp.json:
 
 $(RESULTS_DIR)/%/octilinear/125/deg2-dpen/res_ilp.json:
 	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+
+
+# special graphs
+
+$(RESULTS_DIR)/%/quadtree/75/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/quadtree/75/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/100/deg2-glpk/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/quadtree/75/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+
+
+
+$(RESULTS_DIR)/%/quadtree/75/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/quadtree/75/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/quadtree/75/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/quadtree/100/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/quadtree/125/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+
+$(RESULTS_DIR)/%/chulloctilinear/75/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/75/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/deg2-glpk/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/75/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+
+
+
+$(RESULTS_DIR)/%/chulloctilinear/75/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/75/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/75/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/100/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/chulloctilinear/125/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+
+
+$(RESULTS_DIR)/%/octihanan/75/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan/75/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/100/deg2-glpk/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan/75/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+
+$(RESULTS_DIR)/%/octihanan/75/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan/75/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan/75/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan/100/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan/125/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+
+
+$(RESULTS_DIR)/%/octihanan2/75/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/base/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan2/75/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/deg2-glpk/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/deg2/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan2/75/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/deg2-dpen/res_heur.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=heur GRIDSIZE=125 $@
+
+
+$(RESULTS_DIR)/%/octihanan2/75/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/base/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan2/75/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/deg2/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+$(RESULTS_DIR)/%/octihanan2/75/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=75 $@
+
+$(RESULTS_DIR)/%/octihanan2/100/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octihanan2/125/deg2-dpen/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) METHOD=ilp GRIDSIZE=125 $@
+
+
+
+## with explicit solvers
+$(RESULTS_DIR)/%/octilinear/100/deg2-gurobi/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=gurobi METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-cbc/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=cbc METHOD=ilp GRIDSIZE=100 $@
+
+$(RESULTS_DIR)/%/octilinear/100/deg2-glpk/res_ilp.json:
+	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=glpk METHOD=ilp GRIDSIZE=100 $@
+
+
 
 # edge ordering
 $(RESULTS_DIR)/%/octilinear/100/deg2-init-num-lines/res_heur.json:
@@ -481,6 +729,18 @@ $(TABLES_DIR)/tbl-ordering-comp.pdf: $(TABLES_DIR)/tbl-ordering-comp.tex
 	@cat $^ >> $(TABLES_DIR)/tmp
 	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-ordering-comp $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
+
+$(TABLES_DIR)/tbl-sparse-size-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_HEUR_100) $(RNDR_QUADTREE_DEG2_HEUR_100) $(RNDR_CHULLOCTILINEAR_DEG2_HEUR_100) $(RNDR_OCTIHANAN_DEG2_HEUR_100) $(RNDR_OCTIHANAN2_DEG2_HEUR_100)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py sparse-size-comp $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
+
+$(TABLES_DIR)/tbl-sparse-size-comp.pdf: $(TABLES_DIR)/tbl-sparse-size-comp.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-sparse-size-comp $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
 help:

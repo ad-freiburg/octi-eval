@@ -442,10 +442,10 @@ def tbl_sparse_size_comp(results):
     ret += "  \\centering\n"
     ret += "    \\caption[]{Effects of various methods of base grid simplification on base grid graph size, given as number of nodes $|\\gV'|$ and number of edges $|\\gE'|$. Under `red.` we give the reduction of the number of edges when compared to the full extended grid\\label{TBL:gridsize_simple}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
-    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r}\n"
-    ret += "    & \\multicolumn{2}{c}{Convex Hull} & & \\multicolumn{2}{c}{Quadtree}  & & \\multicolumn{2}{c}{OHG-1}   & & \\multicolumn{2}{c}{OHG-2} \\\\\n"
-    ret += " \\cline{2-3} \\cline{5-6} \\cline{8-9}  \\cline{11-12} \\\\[-2ex] \\toprule\n"
-    ret += "& $|\\gE'|$ & red. && $|\\gE'|$ & red. && $|\\gE'|$ & red.  && $|\\gE'|$ & red.  \\\\\\midrule\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{1}{c}{Full} && \\multicolumn{2}{c}{Convex Hull} & & \\multicolumn{2}{c}{Quadtree}  & & \\multicolumn{2}{c}{OHG-1}   & & \\multicolumn{2}{c}{OHG-2} \\\\\n"
+    ret += " \\cline{2-2} \\cline{4-5} \\cline{7-8} \\cline{10-11}  \\cline{13-14} \\\\[-2ex] \\toprule\n"
+    ret += "& $|\\gE'|$ && $|\\gE'|$ & red. && $|\\gE'|$ & red. && $|\\gE'|$ & red.  && $|\\gE'|$ & red.  \\\\\\midrule\n"
 
 
     sort = []
@@ -470,7 +470,8 @@ def tbl_sparse_size_comp(results):
         avg_hanan += (edges_full - get(results[dataset_id],["heur", "octihanan", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
         avg_hanan2 += (edges_full - get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "gridgraph-size", "edges"])) / edges_full
 
-        ret += "   %s &  %s  & %s && %s  & %s  &&  %s  & %s &&  %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+        ret += "   %s &  %s &&  %s  & %s && %s  & %s  &&  %s  & %s &&  %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                format_int(edges_full),
                 format_int(get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "gridgraph-size", "edges"])),
                 format_perc((edges_full - get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "gridgraph-size", "edges"])) / edges_full),
                 format_int(get(results[dataset_id],["heur", "quadtree", "100", "deg2", "gridgraph-size", "edges"])),
@@ -484,7 +485,7 @@ def tbl_sparse_size_comp(results):
 
     ret += "\\midrule"
 
-    ret += " avg &  & %s &&  & %s  &&  & %s &&  & %s \\\\\n" %(format_perc(avg_chull / len(sort)), format_perc(avg_quad / len(sort)), format_perc(avg_hanan / len(sort)), format_perc(avg_hanan2 / len(sort)))
+    ret += " avg &  &&& %s &&  & %s  &&  & %s &&  & %s \\\\\n" %(format_perc(avg_chull / len(sort)), format_perc(avg_quad / len(sort)), format_perc(avg_hanan / len(sort)), format_perc(avg_hanan2 / len(sort)))
 
     ret += "\\bottomrule"
     ret += "\\end{tabular*}}\n"

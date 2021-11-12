@@ -124,23 +124,23 @@ def format_perc(n):
     if n is None:
         return "---"
 
-    return "%.1f\\%%" % (n * 100)
+    return "%.1f\\makebox[1.6mm][l]{\\hspace{0.2mm}\\%%}" % (n * 100)
 
 
-def format_float(n, raw=False):
+def format_float(n, raw=False, nd=1):
     if n is None:
         return "---"
 
     if raw or n < 100:
-        return "%.1f" % n
+        return ("%." + str(nd) + "f") % n
 
     if n < 1000000:
-        return "%.1f\\Hk" % (n / 1000)
+        return ("%." + str(nd) + "f\\Hk") % (n / 1000)
 
     if n < 1000000000:
-        return "%.1f\\HM" % (n / 1000000)
+        return ("%." + str(nd) + "f\\HM") % (n / 1000000)
 
-    return "%.1f\\HB" % (n / 1000000000)
+    return ("%.1" + str(nd) + "\\HB") % (n / 1000000000)
 
 
 def format_secs(s):
@@ -494,6 +494,232 @@ def tbl_sparse_size_comp(results):
     return ret
 
 
+def tbl_sparse_ilp_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Effects of various methods of base grid simplification on ILP sizes, solution times and optimality. ILPs were optimized using gurobi. \\label{TBL:eval_sparse_ilp}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{1}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{3}{c}{OHG-2}  \\\\\n"
+    ret += "  \\cline{2-2} \\cline{4-6} \\cline{8-10} \\cline{12-14}  \\cline{16-18} \\\\[-2ex] \\toprule\n"
+    ret += "& $\\Theta$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+    avg_chull = 0
+    avg_quad = 0
+    avg_hanan = 0
+    avg_hanan2 = 0
+
+    avg_t_chull = 0
+    avg_t_quad = 0
+    avg_t_hanan = 0
+    avg_t_hanan2 = 0
+
+    chull_c = 0
+    quad_c = 0
+    hanan_c = 0
+    hanan2_c = 0
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        score_full = get(results[dataset_id],["ilp", "octilinear", "100", "deg2", "scores", "total-score"])
+
+        time_full = get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])
+
+        chull_impr = None
+        quad_impr = None
+        hanan_impr = None
+        hanan2_impr = None
+
+        if score_full is not None:
+            if get(results[dataset_id],["ilp", "chulloctilinear", "100", "deg2", "scores", "total-score"]) is not None:
+                avg_t_chull += (time_full - get(results[dataset_id],["ilp", "chulloctilinear", "100", "deg2", "ilp", "solve-time"])) / time_full
+                chull_impr = (get(results[dataset_id],["ilp", "chulloctilinear", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+                avg_chull +=  chull_impr
+                chull_c += 1
+
+            if get(results[dataset_id],["ilp", "quadtree", "100", "deg2", "scores", "total-score"]) is not None:
+                avg_t_quad += (time_full - get(results[dataset_id],["ilp", "quadtree", "100", "deg2", "ilp", "solve-time"])) / time_full
+                quad_impr = (get(results[dataset_id],["ilp", "quadtree", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+                avg_quad +=  quad_impr
+                quad_c += 1
+
+            if get(results[dataset_id],["ilp", "octihanan", "100", "deg2", "scores", "total-score"]) is not None:
+                avg_t_hanan += (time_full - get(results[dataset_id],["ilp", "octihanan", "100", "deg2", "ilp", "solve-time"])) / time_full
+                hanan_impr = (get(results[dataset_id],["ilp", "octihanan", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+                avg_hanan +=  hanan_impr
+                hanan_c += 1
+
+            if get(results[dataset_id],["ilp", "octihanan2", "100", "deg2", "scores", "total-score"]) is not None:
+                avg_t_hanan2 += (time_full - get(results[dataset_id],["ilp", "octihanan2", "100", "deg2", "ilp", "solve-time"])) / time_full
+                hanan2_impr = (get(results[dataset_id],["ilp", "octihanan2", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+                avg_hanan2 += hanan2_impr
+                hanan2_c += 1
+
+        ret += "   %s  & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"])),
+                    format_float(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "scores", "total-score"])),
+                    format_float(chull_impr, True, 2),
+                    format_msecs(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "ilp", "solve-time"])),
+                    format_float(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "scores", "total-score"])),
+                    format_float(quad_impr, True, 2),
+                    format_msecs(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "ilp", "solve-time"])),
+                    format_float(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "scores", "total-score"])),
+                    format_float(hanan_impr, True, 2),
+                    format_msecs(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "ilp", "solve-time"])),
+                    format_float(get(results[dataset_id], ["ilp", "octihanan2", "100", "deg2", "scores", "total-score"])),
+                    format_float(hanan2_impr, True, 2),
+                    format_msecs(get(results[dataset_id], ["ilp", "octihanan2", "100", "deg2", "ilp", "solve-time"]))
+                )
+
+    ret += "\\midrule"
+
+    ret += "   avg  & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_float(avg_chull / chull_c) if chull_c != 0 else "---", format_perc(-avg_t_chull / chull_c) if chull_c != 0 else "---", format_float(avg_quad / quad_c) if quad_c != 0 else "---",  format_perc(-avg_t_quad / quad_c) if quad_c != 0 else "---", format_float(avg_hanan / hanan_c) if hanan_c != 0 else "---", format_perc(-avg_t_hanan / hanan_c) if hanan_c != 0 else "---", format_float(avg_hanan2 / hanan2_c) if hanan2_c != 0 else "---", format_perc(-avg_t_hanan2 / hanan2_c) if hanan2_c != 0 else "---")
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
+
+def tbl_sparse_heur_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Effects of various methods of base grid simplification on solution times and optimality of our approximate approach. \\label{TBL:eval_sparse_heur}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{0pt}\n"
+    ret += "  \\footnotesize\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{1}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{4}{c}{OHG-2}  \\\\\n"
+    ret += "  \\cline{2-2} \\cline{4-6} \\cline{8-10} \\cline{12-14}  \\cline{16-19} \\\\[-2ex] \\toprule\n"
+    ret += "& $\\Theta$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ &\\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+    avg_chull = 0
+    avg_quad = 0
+    avg_hanan = 0
+    avg_hanan2 = 0
+
+    avg_t_chull = 0
+    avg_t_quad = 0
+    avg_t_hanan = 0
+    avg_t_hanan2 = 0
+
+    chull_c = 0
+    quad_c = 0
+    hanan_c = 0
+    hanan2_c = 0
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        score_full = get(results[dataset_id],["heur", "octilinear", "100", "deg2", "scores", "total-score"])
+
+        time_full = get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "time-ms"])
+
+        topo_vios = get(results[dataset_id], ["heur", "octilinear", "100","deg2", "scores", "topo-violations"])
+
+        topo_vios_chull = get(results[dataset_id], ["heur", "chulloctilinear", "100","deg2", "scores", "topo-violations"])
+        topo_vios_quad = get(results[dataset_id], ["heur", "quadtree", "100","deg2", "scores", "topo-violations"])
+        topo_vios_hanan = get(results[dataset_id], ["heur", "octihanan", "100","deg2", "scores", "topo-violations"])
+        topo_vios_hanan2 = get(results[dataset_id], ["heur", "octihanan2", "100","deg2", "scores", "topo-violations"])
+
+        avg_chull += 0 if topo_vios_chull != 0 else (get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+        avg_quad += 0 if topo_vios_quad != 0 else (get(results[dataset_id],["heur", "quadtree", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+        avg_hanan += 0 if topo_vios_hanan != 0 else (get(results[dataset_id],["heur", "octihanan", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+        avg_hanan2 += 0 if topo_vios_hanan2 != 0 else (get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "scores", "total-score"]) - score_full) / score_full
+
+        chull_c += 0 if topo_vios_chull != 0 else 1
+        quad_c += 0 if topo_vios_quad != 0 else 1
+        hanan_c += 0 if topo_vios_hanan != 0 else 1
+        hanan2_c += 0 if topo_vios_hanan2 != 0 else 1
+
+        avg_t_chull += (time_full - get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "time-ms"])) / time_full
+        avg_t_quad += (time_full - get(results[dataset_id],["heur", "quadtree", "100", "deg2", "time-ms"])) / time_full
+        avg_t_hanan += (time_full - get(results[dataset_id],["heur", "octihanan", "100", "deg2", "time-ms"])) / time_full
+        avg_t_hanan2 += (time_full - get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "time-ms"])) / time_full
+
+        ret += "   %s  & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+            format_float(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "scores", "total-score"]), True) if topo_vios == 0 else "%d$w_\\infty$" % topo_vios,
+            format_float(get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]), True) if topo_vios_chull == 0 else "%d$w_\\infty$" % topo_vios_chull,
+            format_float((get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]) - score_full ) / score_full, True, 2) if topo_vios_chull == 0 else "---",
+            format_msecs(get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "time-ms"])),
+            format_float(get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "scores", "total-score"]), True) if topo_vios_quad == 0 else "%d$w_\\infty$" % topo_vios_quad,
+            format_float((get(results[dataset_id],["heur", "quadtree", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_quad == 0 else "---",
+            format_msecs(get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "time-ms"])),
+            format_float(get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "scores", "total-score"]), True) if topo_vios_hanan == 0 else "%d$w_\\infty$" % topo_vios_hanan,
+            format_float((get(results[dataset_id],["heur", "octihanan", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_hanan == 0 else "---",
+            format_msecs(get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "time-ms"])),
+            format_float(get(results[dataset_id], ["heur", "octihanan2", "100", "deg2", "scores", "total-score"]), True) if topo_vios_hanan2 == 0 else "%d$w_\\infty$" % topo_vios_hanan2,
+            format_float((get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_hanan2 == 0 else "---",
+            format_msecs(get(results[dataset_id], ["heur", "octihanan2", "100", "deg2", "time-ms"]))
+        )
+
+    ret += "\\midrule"
+
+    ret += "   avg  & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_float(avg_chull / chull_c, True, 2), format_perc(-avg_t_chull / len(sort)), format_float(avg_quad / quad_c, True, 2), format_perc(-avg_t_quad / len(sort)), format_float(avg_hanan / hanan_c, True, 2), format_perc(-avg_t_hanan / len(sort)), format_float(avg_hanan2 / hanan2_c, True, 2), format_perc(-avg_t_hanan2 / len(sort)))
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
+
+def tbl_time_comp_other_layouts(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{TODO \\label{TBL:solvetimes}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r}\n"
+    ret += "    \\toprule  & LP & A & $\\delta$ & A+D && LP & A & $\\delta$ & A+D \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        vio_hex_a = get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "scores", "topo-violations"])
+        vio_hex_ad = get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2-dpen", "scores", "topo-violations"])
+        vio_portho_a = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "scores", "topo-violations"])
+        vio_portho_ad = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2-dpen", "scores", "topo-violations"])
+
+
+        ret += "   %s  & %s  & %s & %s & %s  && %s & %s & %s & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                format_msecs(get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "ilp", "solve-time"])),
+                format_msecs(get(results[dataset_id], ["heur", "hexalinear", "100", "deg2", "time-ms"])),
+                "---",
+                format_msecs(get(results[dataset_id], ["heur", "hexalinear", "100", "deg2-dpen", "time-ms"])),
+                format_msecs(get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "ilp", "solve-time"])),
+                format_msecs(get(results[dataset_id], ["heur", "porthorad", "100", "deg2", "time-ms"])),
+                "---",
+                format_msecs(get(results[dataset_id], ["heur", "porthorad", "100", "deg2-dpen", "time-ms"]))
+                )
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
 
 def bold(s):
     return "\\textbf{" + s + "}"
@@ -538,6 +764,15 @@ def main():
 
     if sys.argv[1] == "sparse-size-comp":
         print(tbl_sparse_size_comp(results))
+
+    if sys.argv[1] == "sparse-ilp-comp":
+        print(tbl_sparse_ilp_comp(results))
+
+    if sys.argv[1] == "sparse-heur-comp":
+        print(tbl_sparse_heur_comp(results))
+
+    if sys.argv[1] == "time-comp-other-layouts":
+        print(tbl_time_comp_other_layouts(results))
 
 if __name__ == "__main__":
     main()

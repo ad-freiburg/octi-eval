@@ -161,7 +161,7 @@ $(RESULTS_DIR)/%/porthorad/$(GRIDSIZE)/deg2/res_$(METHOD).json: datasets/%.json
 $(RESULTS_DIR)/%/porthorad/$(GRIDSIZE)/deg2-dpen/res_$(METHOD).json: datasets/%.json
 	@printf "[%s] Schematizing $< to $@ ... \n" "$$(date -Is)"
 	@mkdir -p $(dir $@)
-	$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
+	@$(OCTI) $(GLOB_ARGS) --grid-size "$(GRIDSIZE)%" --density-pen 10 --base-graph=porthoradial --deg2-heur  < $< > $@ 2> $(basename $@).log || printf "[%s] Schematization not successful.\n" "$$(date -Is)"
 
 	@printf "[%s] Done.\n" "$$(date -Is)"
 

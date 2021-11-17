@@ -683,8 +683,9 @@ def tbl_time_comp_other_layouts(results):
     ret += "  \\centering\n"
     ret += "    \\caption[]{TODO \\label{TBL:solvetimes}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
-    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r}\n"
-    ret += "    \\toprule  & LP & A & $\\delta$ & A+D && LP & A & $\\delta$ & A+D \\\\\\midrule\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r}\n"
+    ret += "   & \\multicolumn{4}{c}{\\footnotesize Hexalinear} && \\multicolumn{4}{c}{\\footnotesize Pseudo-Orthoradial}\\\\\n"
+    ret += "    \\cline{2-5} \\cline{7-10} \\\\[-2ex] \\toprule  & LP & A & $\\delta$ & A+D && LP & A & $\\delta$ & A+D &\\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -702,8 +703,10 @@ def tbl_time_comp_other_layouts(results):
         vio_portho_a = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "scores", "topo-violations"])
         vio_portho_ad = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2-dpen", "scores", "topo-violations"])
 
+        
 
-        ret += "   %s  & %s  & %s & %s & %s  && %s & %s & %s & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+
+        ret += "   %s  & %s  & %s & %s & %s  && %s & %s & %s & %s &\\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                 format_msecs(get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "ilp", "solve-time"])),
                 format_msecs(get(results[dataset_id], ["heur", "hexalinear", "100", "deg2", "time-ms"])),
                 "---",

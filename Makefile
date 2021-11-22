@@ -282,6 +282,11 @@ RNDR_QUADTREE_DEG2_DPEN = $(RNDR_QUADTREE_DEG2_DPEN_HEUR_75) $(RNDR_QUADTREE_DEG
 RNDR_HEXALINEAR_DEG2_DPEN = $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_75) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_125)
 RNDR_PORTHORAD_DEG2_DPEN = $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_75) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_125)
 
+
+RNDR_DEG2_ILP_100_GLPK := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-glpk/res_ilp.json, $(DATASETS))
+RNDR_DEG2_ILP_100_GUROBI := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-gurobi/res_ilp.json, $(DATASETS))
+RNDR_DEG2_ILP_100_CBC := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-cbc/res_ilp.json, $(DATASETS))
+
 list:
 	@echo $(DATASETS) | tr ' ' '\n'
 
@@ -721,7 +726,6 @@ $(RESULTS_DIR)/%/octilinear/100/deg2-glpk/res_ilp.json:
 	@make -f Makefile-aux $(GLOB_ARGS) ILP_SOLVER=glpk METHOD=ilp GRIDSIZE=100 $@
 
 
-
 # edge ordering
 $(RESULTS_DIR)/%/octilinear/100/deg2-init-num-lines/res_heur.json:
 	@make -f Makefile-aux $(GLOB_ARGS) EDGE_ORDER=num-lines METHOD=heur GRIDSIZE=100 $@
@@ -813,6 +817,18 @@ $(TABLES_DIR)/tbl-ilp-solve-deg2.pdf: $(TABLES_DIR)/tbl-ilp-solve-deg2.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-ilp-solve-deg2 $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
+$(TABLES_DIR)/tbl-ilp-solvers-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_ILP_100_GLPK) $(RNDR_DEG2_ILP_100_GUROBI) $(RNDR_DEG2_ILP_100_CBC)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py ilp-solvers-comp $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
+
+$(TABLES_DIR)/tbl-ilp-solvers-comp.pdf: $(TABLES_DIR)/tbl-ilp-solvers-comp.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-ilp-solvers-comp $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
+
 $(TABLES_DIR)/tbl-approx-solve-deg2.tex: script/table.py script/template.tex $(RNDR_DEG2_ILP_75) $(RNDR_DEG2_ILP_100) $(RNDR_DEG2_ILP_125) $(RNDR_DEG2_HEUR_75) $(RNDR_DEG2_HEUR_100) $(RNDR_DEG2_HEUR_125)
 	@mkdir -p $(TABLES_DIR)
 	@python3 script/table.py approx-solve-deg2 $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
@@ -825,7 +841,7 @@ $(TABLES_DIR)/tbl-approx-solve-deg2.pdf: $(TABLES_DIR)/tbl-approx-solve-deg2.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-approx-solve-deg2 $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
-$(TABLES_DIR)/tbl-time-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_DPEN_HEUR_100) $(RNDR_DEG2_HEUR_100) $(RNDR_HEUR_100) #$(RNDR_DEG2_ILP_100) $(RNDR_ILP_100)
+$(TABLES_DIR)/tbl-time-comp.tex: script/table.py script/template.tex $(RNDR_DEG2_DPEN_HEUR_100) $(RNDR_DEG2_HEUR_100) $(RNDR_HEUR_100) $(RNDR_DEG2_ILP_100) $(RNDR_ILP_100)
 	@mkdir -p $(TABLES_DIR)
 	@python3 script/table.py time-comp $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
 
@@ -885,7 +901,7 @@ $(TABLES_DIR)/tbl-sparse-heur-comp.pdf: $(TABLES_DIR)/tbl-sparse-heur-comp.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-sparse-heur-comp $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
-$(TABLES_DIR)/tbl-time-comp-other-layouts.tex: script/table.py script/template.tex $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_HEXALINEAR_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100)
+$(TABLES_DIR)/tbl-time-comp-other-layouts.tex: script/table.py script/template.tex $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_HEXALINEAR_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_HEXALINEAR_DEG2_ILP_100) 
 	@mkdir -p $(TABLES_DIR)
 	@python3 script/table.py time-comp-other-layouts $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
 

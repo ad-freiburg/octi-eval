@@ -179,7 +179,7 @@ def format_approxerr(perfect, approx):
 def tbl_overview(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "  \\caption[]{Line graphs used in our experimental evaluation. Under $|{\\cal S}|$ we give the number of station nodes in the graph. Under  $|V|$ we give the numer of nodes (including station nodes). Under $|E|$ we give the number of edges. Under $|{\\cal L}|$ we give the number of lines. $M$ is the maximum number of lines per edge. $D$ is the maximum node degree. $|\\Omega|$ is the line-ordering search space size on the original line graph. \\label{TBL:loom:dataset-overview}}\n"
+    ret += "  \\caption[]{Line graphs used in our experimental evaluation. \\TODO{describe...} \\label{TBL:octi:dataset-overview}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} l r r r r r r r r r r r}\n"
     ret += "     &&&&\\multicolumn{2}{c}{\\footnotesize grid graph}&& \\multicolumn{2}{c}{\\footnotesize raw} & & \\multicolumn{2}{c}{\\footnotesize deg-2 heur}\\\\\n\\cline{5-6}\\cline{8-9} \\cline{11-12}\\\\[-2ex] \\toprule\n"
@@ -233,15 +233,15 @@ def tbl_ilp_solve_raw(results):
         ret += "   %s  & %s$\\times$%s  & %s  & %s && %s$\\times$%s & %s  & %s && %s$\\times$ %s & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "scores", "total-score"]))
                                                                    )
 
@@ -273,16 +273,50 @@ def tbl_ilp_solve_deg2(results):
         ret += "   %s  & %s$\\times$%s  & %s  & %s && %s$\\times$%s & %s  & %s && %s$\\times$ %s & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "scores", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "scores", "total-score"]))
+                                                                   )
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
+
+def tbl_ilp_solvers_comp(results):
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Comparison of the performance of 3 different ILP solvers: the GNU linear programming kit (GLPK), the COIN-OR CBC solver (CBC), and gurobi, all evaluated on a grid graph with cell size $D = 1.0 \\cdot \\bar d$, and with the degree-2 heuristic enabled. Under $t$ we give the time needed to solve the ILP to optimality, under \emph{mem} we give the peak memory usage. An entry of --- means that we were not able to find an optimal solution in under 12 hours.\\label{TBL:eval_ilp_solvers}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
+    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
+    ret += "     & \\multicolumn{2}{c}{GLPK} & & \\multicolumn{2}{c}{CBC} & & \\multicolumn{2}{c}{gurobi} \\\\\n"
+    ret += "      \\cline{2-3} \\cline{5-6} \\cline{8-9}  \\\\[-2ex] \\toprule\n"
+    ret += "               & $t$ & mem && $t$ & mem && $t$ & mem \\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+        ret += "   %s  & %s & %s && %s & %s && %s & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"]))
                                                                    )
 
     ret += "\\bottomrule"
@@ -351,7 +385,7 @@ def tbl_approx_solve_deg2(results):
 def tbl_time_comp(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{TODO \\label{TBL:solvetimes}}\n"
+    ret += "    \\caption[]{Solution times for our linear program and our approximate approach, without (LP, A) and with (LP-2, A-2) the degree-2 heuristic. For the approximate approaches, we also evaluate the running time with an additional density penalty (A-2+D) and give the number of local search iterations until convergence was reached.  \\label{TBL:solvetimes}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r}\n"
     ret += "    \\toprule  & LP & A & its. & LP-2 & A-2 & its. & \\textbf{A-2+D} & its. \\\\\\midrule\n"
@@ -362,7 +396,6 @@ def tbl_time_comp(results):
 
     sort = sorted(
         sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
-
 
     for dataset_id in sort:
         r = results[dataset_id]
@@ -681,11 +714,11 @@ def tbl_sparse_heur_comp(results):
 def tbl_time_comp_other_layouts(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{TODO \\label{TBL:solvetimes}}\n"
+    ret += "    \\caption[]{Solve times for our methods LP-2, A-2 and A-2+D on a hexalinear and a pseudo-orthoradial base graph. The relative approximation error of our A-2 approach is given as $\\delta$. If topology violoations occured, we do not give the approximatione error, but the number of violations in parentheses. \\label{TBL:solvetimes}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r}\n"
-    ret += "   & \\multicolumn{4}{c}{\\footnotesize Hexalinear} && \\multicolumn{4}{c}{\\footnotesize Pseudo-Orthoradial}\\\\\n"
-    ret += "    \\cline{2-5} \\cline{7-10} \\\\[-2ex] \\toprule  & LP & A & $\\delta$ & A+D && LP & A & $\\delta$ & A+D &\\\\\\midrule\n"
+    ret += "   & \\multicolumn{4}{c}{\\footnotesize Hexalinear} && \\multicolumn{5}{c}{\\footnotesize Pseudo-Orthoradial}\\\\\n"
+    ret += "    \\cline{2-5} \\cline{7-11} \\\\[-2ex] \\toprule  & LP-2 & A-2 & $\\delta$ & A-2+D && LP-2 & A-2 & $\\delta$ & \\multicolumn{2}{c}{A-2+D}\\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -698,22 +731,40 @@ def tbl_time_comp_other_layouts(results):
     for dataset_id in sort:
         r = results[dataset_id]
 
-        vio_hex_a = get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "scores", "topo-violations"])
-        vio_hex_ad = get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2-dpen", "scores", "topo-violations"])
-        vio_portho_a = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "scores", "topo-violations"])
-        vio_portho_ad = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2-dpen", "scores", "topo-violations"])
+        hex_optim = get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "scores", "total-score"])
+        portho_optim = get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "scores", "total-score"])
 
-        
+        hex_a = get(results[dataset_id], ["heur", "hexalinear", "100", "deg2", "scores", "total-score"])
+        portho_a = get(results[dataset_id], ["heur", "porthorad", "100", "deg2", "scores", "total-score"])
 
+        vio_hex_a = get(results[dataset_id], ["heur", "hexalinear", "100", "deg2", "scores", "topo-violations"])
+        vio_hex_ad = get(results[dataset_id], ["heur", "hexalinear", "100", "deg2-dpen", "scores", "topo-violations"])
+        vio_portho_a = get(results[dataset_id], ["heur", "porthorad", "100", "deg2", "scores", "topo-violations"])
+        vio_portho_ad = get(results[dataset_id], ["heur", "porthorad", "100", "deg2-dpen", "scores", "topo-violations"])
+
+        hex_err = "---"
+        portho_err = "---"
+
+        if hex_optim is not None and vio_hex_a == 0:
+            hex_err = format_float((hex_a  - hex_optim) / hex_optim)
+
+        if vio_hex_a is not None and vio_hex_a > 0:
+            hex_err = "--- (" + str(vio_hex_a) + ")"
+
+        if portho_optim is not None and vio_portho_a == 0:
+            portho_err = format_float((portho_a  - portho_optim) / portho_optim)
+
+        if vio_portho_a is not None and vio_portho_a > 0:
+            portho_err = "--- (" + str(vio_portho_a) + ")"
 
         ret += "   %s  & %s  & %s & %s & %s  && %s & %s & %s & %s &\\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                 format_msecs(get(results[dataset_id], ["ilp", "hexalinear", "100", "deg2", "ilp", "solve-time"])),
                 format_msecs(get(results[dataset_id], ["heur", "hexalinear", "100", "deg2", "time-ms"])),
-                "---",
+                hex_err,
                 format_msecs(get(results[dataset_id], ["heur", "hexalinear", "100", "deg2-dpen", "time-ms"])),
                 format_msecs(get(results[dataset_id], ["ilp", "porthorad", "100", "deg2", "ilp", "solve-time"])),
                 format_msecs(get(results[dataset_id], ["heur", "porthorad", "100", "deg2", "time-ms"])),
-                "---",
+                portho_err,
                 format_msecs(get(results[dataset_id], ["heur", "porthorad", "100", "deg2-dpen", "time-ms"]))
                 )
 
@@ -776,6 +827,9 @@ def main():
 
     if sys.argv[1] == "time-comp-other-layouts":
         print(tbl_time_comp_other_layouts(results))
+
+    if sys.argv[1] == "ilp-solvers-comp":
+        print(tbl_ilp_solvers_comp(results))
 
 if __name__ == "__main__":
     main()

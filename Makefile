@@ -287,6 +287,8 @@ RNDR_DEG2_ILP_100_GLPK := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-glp
 RNDR_DEG2_ILP_100_GUROBI := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-gurobi/res_ilp.json, $(DATASETS))
 RNDR_DEG2_ILP_100_CBC := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-cbc/res_ilp.json, $(DATASETS))
 
+tables: $(TABLES_DIR)/tbl-overview.pdf $(TABLES_DIR)/tbl-ilp-solve-raw.pdf $(TABLES_DIR)/tbl-ilp-solve-deg2.pdf $(TABLES_DIR)/tbl-ilp-solvers-comp.pdf $(TABLES_DIR)/tbl-approx-solve-deg2.pdf $(TABLES_DIR)/tbl-time-comp.pdf $(TABLES_DIR)/tbl-ordering-comp.pdf $(TABLES_DIR)/tbl-sparse-size-comp.pdf $(TABLES_DIR)/tbl-sparse-ilp-comp.pdf $(TABLES_DIR)/tbl-sparse-heur-comp.pdf $(TABLES_DIR)/tbl-time-comp-other-layouts.pdf
+
 list:
 	@echo $(DATASETS) | tr ' ' '\n'
 

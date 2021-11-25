@@ -120,6 +120,22 @@ def format_int(n):
 
     return "%.1f\\HB" % (n / 1000000000)
 
+
+def format_mem(n):
+    if n is None:
+        return "---"
+
+    units = ["B", "kB", "MB", "GB", "TB", "PB"]
+
+    i = 0
+
+    while n > 1024 and i < 5:
+        n = n / 1024
+        i += 1
+
+    return "%.1f %s" % (n, units[i])
+
+
 def format_perc(n):
     if n is None:
         return "---"
@@ -774,6 +790,92 @@ def tbl_time_comp_other_layouts(results):
 
     return ret
 
+def tbl_mem_consumption(results):
+
+    ret = "\\begin{table}\n"
+    ret += "  \\centering\n"
+    ret += "    \\caption[]{Memory consumption on sparse base grids of our ILP (LP-2) and our approximate approach (A-2), both with the degree-2 heuristic enabled.\\label{TBL:eval_sparse_mem}}\n"
+    ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{0pt}\n"
+    ret += "  \\footnotesize\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{2}{c}{Full} && \\multicolumn{2}{c}{Convex Hull} & & \\multicolumn{2}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1} \\\\\n"
+    ret += "  \\cline{2-3} \\cline{5-6} \\cline{8-9} \\cline{11-13}   \\\\[-2ex] \\toprule\n"
+    ret += "& \\multicolumn{1}{c}{LP-2} & \\multicolumn{1}{c}{A-2} && \\multicolumn{1}{c}{LP-2} & \\multicolumn{1}{c}{A-2}  && \\multicolumn{1}{c}{LP-2} & \\multicolumn{1}{c}{A-2}   && \\multicolumn{1}{c}{LP-2} & \\multicolumn{1}{c}{A-2}  &\\\\\\midrule\n"
+
+    sort = []
+    for dataset_id in results:
+        sort.append(dataset_id)
+
+    sort = sorted(
+        sort, key=lambda d: get(results[d],["heur", "octilinear", "100", "deg2", "input-graph-size", "edges"]))
+
+    sum_chull_lp = 0
+    sum_chull_heur = 0
+    sum_quadtree_lp = 0
+    sum_quadtree_heur = 0
+    sum_octihanan_lp = 0
+    sum_octihanan_heur = 0
+
+    for dataset_id in sort:
+        r = results[dataset_id]
+
+        full_lp = get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])
+        full_heur = get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "peak-memory-bytes"])
+
+        chull_lp = get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "peak-memory-bytes"])
+        chull_heur = get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "peak-memory-bytes"])
+
+        quadtree_lp = get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "peak-memory-bytes"])
+        quadtree_heur = get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "peak-memory-bytes"])
+
+        octihanan_lp = get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "peak-memory-bytes"])
+        octihanan_heur = get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "peak-memory-bytes"])
+
+        if chull_lp is not None and full_lp is not None:
+            sum_chull_lp += (chull_lp  - full_lp) / full_lp
+
+        if chull_heur is not None and full_heur is not None:
+            sum_chull_heur += (chull_heur  - full_heur) / full_heur
+
+        if quadtree_lp is not None and full_lp is not None:
+            sum_quadtree_lp += (quadtree_lp  - full_lp) / full_lp
+
+        if quadtree_heur is not None and full_heur is not None:
+            sum_quadtree_heur += (quadtree_heur  - full_heur) / full_heur
+
+        if octihanan_lp is not None and full_lp is not None:
+            sum_octihanan_lp += (octihanan_lp  - full_lp) / full_lp
+
+        if octihanan_heur is not None and full_heur is not None:
+            sum_octihanan_heur += (octihanan_heur  - full_heur) / full_heur
+
+
+        ret += "   %s  & %s & %s && %s & %s &&  %s & %s && %s & %s &\\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+            format_mem(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "peak-memory-bytes"])),
+            format_mem(get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "peak-memory-bytes"]))
+        )
+
+    ret += "\\midrule"
+
+    ret +=  "   avg  &  &  && %s & %s &&  %s & %s && %s & %s &\\\\\n" % (
+        format_perc(sum_chull_lp / len (sort)),
+        format_perc(sum_chull_heur / len (sort)),
+        format_perc(sum_quadtree_lp / len (sort)),
+        format_perc(sum_quadtree_heur / len (sort)),
+        format_perc(sum_octihanan_lp / len (sort)),
+        format_perc(sum_octihanan_heur / len (sort))
+    )
+
+    ret += "\\bottomrule"
+    ret += "\\end{tabular*}}\n"
+    ret += "\\end{table}\n"
+
+    return ret
 
 def bold(s):
     return "\\textbf{" + s + "}"
@@ -830,6 +932,9 @@ def main():
 
     if sys.argv[1] == "ilp-solvers-comp":
         print(tbl_ilp_solvers_comp(results))
+
+    if sys.argv[1] == "mem-consumption":
+        print(tbl_mem_consumption(results))
 
 if __name__ == "__main__":
     main()

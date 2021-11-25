@@ -10,7 +10,6 @@ ILP_SOLVER = gurobi
 GRIDSIZE = 100
 
 RESULTS_DIR := results
-OVERALL_TIMEOUT := 43200 # = 12 hours, timeout after which we abort and do not write a solution, in seconds
 
 GLOB_ARGS = --stats -o $(METHOD) --ilp-solver $(ILP_SOLVER) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-time-limit $(ILP_TIMEOUT) --restr-loc-search
 

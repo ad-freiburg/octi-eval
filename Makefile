@@ -10,7 +10,7 @@ TABLES_DIR := tables
 ILP_TIMEOUT = 43200 # timeout = 12 hours
 ILP_CACHE_DIR = /tmp
 
-GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DIR) RESULTS_DIR=$(RESULTS_DIR)
+GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DIR) RESULTS_DIR=$(RESULTS_DIR) ILP_SOLVER = $(ILP_SOLVER)
 
 DATASETS = $(basename $(notdir $(wildcard datasets/*.json)))
 
@@ -913,6 +913,18 @@ $(TABLES_DIR)/tbl-time-comp-other-layouts.pdf: $(TABLES_DIR)/tbl-time-comp-other
 	@cat $^ >> $(TABLES_DIR)/tmp
 	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-time-comp-other-layouts $(TABLES_DIR)/tmp > /dev/null
+	@rm $(TABLES_DIR)/tmp
+
+$(TABLES_DIR)/tbl-mem-consumption.tex: script/table.py script/template.tex $(RNDR_DEG2_HEUR_100) $(RNDR_QUADTREE_DEG2_HEUR_100) $(RNDR_CHULLOCTILINEAR_DEG2_HEUR_100) $(RNDR_OCTIHANAN_DEG2_HEUR_100) $(RNDR_OCTIHANAN2_DEG2_HEUR_100)
+	@mkdir -p $(TABLES_DIR)
+	@python3 script/table.py mem-consumption $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
+
+$(TABLES_DIR)/tbl-mem-consumption.pdf: $(TABLES_DIR)/tbl-mem-consumption.tex
+	@printf "[%s] Generating $@ ... \n" "$$(date -Is)"
+	@cat script/template.tex > $(TABLES_DIR)/tmp
+	@cat $^ >> $(TABLES_DIR)/tmp
+	@echo "\\\end{document}" >> $(TABLES_DIR)/tmp
+	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-mem-consumption $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
 

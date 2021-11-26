@@ -10,7 +10,7 @@ TABLES_DIR := tables
 ILP_TIMEOUT = 43200 # timeout = 12 hours
 ILP_CACHE_DIR = /tmp
 
-GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DIR) RESULTS_DIR=$(RESULTS_DIR) ILP_SOLVER = $(ILP_SOLVER)
+GLOB_ARGS = OCTI=$(OCTI) ILP_TIMEOUT=$(ILP_TIMEOUT) ILP_CACHE_DIR=$(ILP_CACHE_DIR) RESULTS_DIR=$(RESULTS_DIR) ILP_SOLVER=$(ILP_SOLVER)
 
 DATASETS = $(basename $(notdir $(wildcard datasets/*.json)))
 
@@ -287,7 +287,7 @@ RNDR_DEG2_ILP_100_GLPK := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-glp
 RNDR_DEG2_ILP_100_GUROBI := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-gurobi/res_ilp.json, $(DATASETS))
 RNDR_DEG2_ILP_100_CBC := $(patsubst %, $(RESULTS_DIR)/%/octilinear/100/deg2-cbc/res_ilp.json, $(DATASETS))
 
-tables: $(TABLES_DIR)/tbl-overview.pdf $(TABLES_DIR)/tbl-ilp-solve-raw.pdf $(TABLES_DIR)/tbl-ilp-solve-deg2.pdf $(TABLES_DIR)/tbl-ilp-solvers-comp.pdf $(TABLES_DIR)/tbl-approx-solve-deg2.pdf $(TABLES_DIR)/tbl-time-comp.pdf $(TABLES_DIR)/tbl-ordering-comp.pdf $(TABLES_DIR)/tbl-sparse-size-comp.pdf $(TABLES_DIR)/tbl-sparse-ilp-comp.pdf $(TABLES_DIR)/tbl-sparse-heur-comp.pdf $(TABLES_DIR)/tbl-time-comp-other-layouts.pdf
+tables: $(TABLES_DIR)/tbl-overview.pdf $(TABLES_DIR)/tbl-ilp-solve-raw.pdf $(TABLES_DIR)/tbl-ilp-solve-deg2.pdf $(TABLES_DIR)/tbl-ilp-solvers-comp.pdf $(TABLES_DIR)/tbl-approx-solve-deg2.pdf $(TABLES_DIR)/tbl-time-comp.pdf $(TABLES_DIR)/tbl-ordering-comp.pdf $(TABLES_DIR)/tbl-sparse-size-comp.pdf $(TABLES_DIR)/tbl-sparse-ilp-comp.pdf $(TABLES_DIR)/tbl-sparse-heur-comp.pdf $(TABLES_DIR)/tbl-time-comp-other-layouts.pdf $(TABLES_DIR)/tbl-mem-consumption.pdf
 
 list:
 	@echo $(DATASETS) | tr ' ' '\n'
@@ -939,7 +939,7 @@ check:
 	@gurobi_cl --license
 	@echo "octi version:" `$(OCTI) --version`
 	@echo "results dir:" $(RESULTS_DIR)
-	@echo "timeout:" $(OVERALL_TIMEOUT)s
+	@echo "ILP timeout:" $(ILP_TIMEOUT)s
 	@echo "ILP cache dir:" $(ILP_CACHE_DIR)
 
 clean:

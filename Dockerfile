@@ -43,6 +43,7 @@ RUN cd /loom && rm -rf build && mkdir build && cd build && cmake .. && make -j20
 RUN mkdir -p /output
 
 COPY Makefile /
+COPY Makefile-aux /
 COPY README.md /
 ADD script /script
 ADD datasets /datasets

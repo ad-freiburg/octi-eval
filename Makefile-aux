@@ -5,13 +5,14 @@
 OCTI = octi
 ILP_TIMEOUT = 43200 # timeout = 12 hours
 ILP_CACHE_DIR = /tmp
+ILP_CACHE_THRESHOLD = 12
 METHOD = heur
 ILP_SOLVER = gurobi
 GRIDSIZE = 100
 
 RESULTS_DIR := results
 
-GLOB_ARGS = --stats -o $(METHOD) --ilp-solver $(ILP_SOLVER) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-time-limit $(ILP_TIMEOUT) --ilp-num-threads 8 --restr-loc-search
+GLOB_ARGS = --stats -o $(METHOD) --ilp-solver $(ILP_SOLVER) --ilp-cache-dir $(ILP_CACHE_DIR) --ilp-cache-threshold $(ILP_CACHE_THRESHOLD) --ilp-time-limit $(ILP_TIMEOUT) --ilp-num-threads 8 --restr-loc-search
 
 .PHONY: render render-octihanan render-octihanan2 render-porthoradial render-base render-deg2 render-deg2-dpen ilp-base ilp-deg2 ilp ilp-solve-base ilp-solve-deg2 ilp-solve clean list all help
 

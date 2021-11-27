@@ -50,4 +50,4 @@ ADD datasets /datasets
 
 WORKDIR /
 
-ENTRYPOINT ["make", "RESULTS_DIR=/output/results", "TABLES_DIR=/output/tables", "ILP_CACHE_DIR=/tmp"]
+ENTRYPOINT ["make", "RESULTS_DIR=/output/results", "TABLES_DIR=/output/tables", "ILP_CACHE_DIR=/output"]

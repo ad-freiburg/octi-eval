@@ -195,7 +195,7 @@ def format_approxerr(perfect, approx):
 def tbl_overview(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "  \\caption[]{Line graphs used in our experimental evaluation. \\TODO{describe...} \\label{TBL:octi:dataset-overview}}\n"
+    ret += "  \\caption[]{Line graphs used in our experimental evaluation. Under $\\bar d$ with give the average distance of adjacent input nodes. $A$ is the area of the input graph in $km^2$. The maximum input node degree is given as $\\deg_{\\text{max}}$. The size of the corresponding grid graph with cell size $D = \\bar d$ is given in number of nodes $|\\Psi|$ and number of edges $|\\Omega|$. The last 4 column s give the number of nodes $|V|$ and the number of edges $|E|$ with and without the degree-2 heuristic. \\label{TBL:octi:dataset-overview}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} l r r r r r r r r r r r}\n"
     ret += "     &&&&\\multicolumn{2}{c}{\\footnotesize grid graph}&& \\multicolumn{2}{c}{\\footnotesize raw} & & \\multicolumn{2}{c}{\\footnotesize deg-2 heur}\\\\\n\\cline{5-6}\\cline{8-9} \\cline{11-12}\\\\[-2ex] \\toprule\n"

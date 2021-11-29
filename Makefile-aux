@@ -3,7 +3,7 @@
 # Authors: Patrick Brosi (brosi@cs.uni-freiburg.de)
 
 OCTI = octi
-ILP_TIMEOUT = 43200 # timeout = 12 hours
+ILP_TIMEOUT = 86400 # timeout = 24 hours
 ILP_CACHE_DIR = /tmp
 ILP_CACHE_THRESHOLD = 12
 METHOD = heur

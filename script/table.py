@@ -730,7 +730,7 @@ def tbl_sparse_heur_comp(results):
 def tbl_time_comp_other_layouts(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Solve times for our methods LP-2, A-2 and A-2+D on a hexalinear and a pseudo-orthoradial base graph. The relative approximation error of our A-2 approach is given as $\\delta$. If topology violoations occured, we do not give the approximatione error, but the number of violations in parentheses. \\label{TBL:solvetimes}}\n"
+    ret += "    \\caption[]{Solve times for our methods LP-2, A-2 and A-2+D on a hexalinear and a pseudo-orthoradial base graph. The relative approximation error of our A-2 approach is given as $\\delta$. If topology violoations occured, we do not give the approximatione error, but the number of violations in parentheses. \\label{TBL:solvetimesotherlayouts}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r}\n"
     ret += "   & \\multicolumn{4}{c}{\\footnotesize Hexalinear} && \\multicolumn{5}{c}{\\footnotesize Pseudo-Orthoradial}\\\\\n"

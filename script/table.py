@@ -230,7 +230,7 @@ def tbl_overview(results):
 def tbl_ilp_solve_raw(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Dimensions, final objective value $\\Theta$ and solution times $t$ of our ILP \\emph{without} the degree-2 heuristic (LP) for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. Scores of --- mean no initial feasible solution could be found in under 12 hours. If no optimal ILP solution was found in under 12 hours, we give the best bound.  \\label{TBL:eval_ilp_raw}}\n"
+    ret += "    \\caption[]{Dimensions, final objective value $\\Theta$ and solution times $t$ of our ILP \\emph{without} the degree-2 heuristic (LP) for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. Scores of --- mean no initial feasible solution could be found in under 24 hours. If no optimal ILP solution was found in under 24 hours, we give the best bound.  \\label{TBL:eval_ilp_raw}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{3}{c}{$D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.25 \\cdot \\bar d$} \\\\\n"
@@ -270,7 +270,7 @@ def tbl_ilp_solve_raw(results):
 def tbl_ilp_solve_deg2(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Dimensions, final objective value $\\Theta$ and solution times $t$ of our ILP \\emph{with} the degree-2 heuristic (LP) for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. Scores of --- mean no initial feasible solution could be found in under 12 hours. If no optimal ILP solution was found in under 12 hours, we give the best bound.  \\label{TBL:eval_ilp_deg2}}\n"
+    ret += "    \\caption[]{Dimensions, final objective value $\\Theta$ and solution times $t$ of our ILP \\emph{with} the degree-2 heuristic (LP) for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. Scores of --- mean no initial feasible solution could be found in under 24 hours. If no optimal ILP solution was found in under 24 hours, we give the best bound.  \\label{TBL:eval_ilp_deg2}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{3}{c}{$D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.25 \\cdot \\bar d$} \\\\\n"
@@ -310,7 +310,7 @@ def tbl_ilp_solve_deg2(results):
 def tbl_ilp_solvers_comp(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Comparison of the performance of 3 different ILP solvers: the GNU linear programming kit (GLPK), the COIN-OR CBC solver (CBC), and gurobi, all evaluated on a grid graph with cell size $D = 1.0 \\cdot \\bar d$, and with the degree-2 heuristic enabled. Under $t$ we give the time needed to solve the ILP to optimality, under \emph{mem} we give the peak memory usage. An entry of --- means that we were not able to find an optimal solution in under 12 hours.\\label{TBL:eval_ilp_solvers}}\n"
+    ret += "    \\caption[]{Comparison of the performance of 3 different ILP solvers: the GNU linear programming kit (GLPK), the COIN-OR CBC solver (CBC), and gurobi, all evaluated on a grid graph with cell size $D = 1.0 \\cdot \\bar d$, and with the degree-2 heuristic enabled. Under $t$ we give the time needed to solve the ILP to optimality, under \emph{mem} we give the peak memory usage. An entry of --- means that we were not able to find an optimal solution in under 24 hours.\\label{TBL:eval_ilp_solvers}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{2}{c}{GLPK} & & \\multicolumn{2}{c}{CBC} & & \\multicolumn{2}{c}{gurobi} \\\\\n"
@@ -327,12 +327,12 @@ def tbl_ilp_solvers_comp(results):
     for dataset_id in sort:
         r = results[dataset_id]
         ret += "   %s  & %s & %s && %s & %s && %s & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
-                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])),
-                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"])),
-                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "peak-memory-bytes"]))
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-glpk", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-glpk", "peak-memory-bytes"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-cbc", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-cbc", "peak-memory-bytes"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-gurobi", "ilp", "solve-time"])),
+                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2-gurobi", "peak-memory-bytes"]))
                                                                    )
 
     ret += "\\bottomrule"
@@ -344,7 +344,7 @@ def tbl_ilp_solvers_comp(results):
 def tbl_approx_solve_deg2(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Final objective values of our ILP (LP-2) and our approx. approach (A-2), both with deg-2 heuristic for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. The approximation error is given as $\\delta$. Scores of --- mean no solution could be found. If no optimal LP solution was found in under 12 hours, we give the best bound. \\label{TBL:eval_approx_deg2}}\n"
+    ret += "    \\caption[]{Final objective values of our ILP (LP-2) and our approx. approach (A-2), both with deg-2 heuristic for grid cell sizes $D=0.75 \\cdot \\bar d, D=1 \\cdot \\bar d$ and $D=1.25 \\cdot \\bar d$. The approximation error is given as $\\delta$. Scores of --- mean no solution could be found. If no optimal LP solution was found in under 24 hours, we give the best bound. \\label{TBL:eval_approx_deg2}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{3}{c}{\\footnotesize $D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{\\footnotesize $D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{\\footnotesize $D=1.25 \\cdot \\bar d$} \\\\\n"

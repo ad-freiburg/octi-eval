@@ -156,7 +156,7 @@ def format_float(n, raw=False, nd=1):
     if n < 1000000000:
         return ("%." + str(nd) + "f\\HM") % (n / 1000000)
 
-    return ("%.1" + str(nd) + "\\HB") % (n / 1000000000)
+    return ("%." + str(nd) + "f\\HB") % (n / 1000000000)
 
 
 def format_secs(s):

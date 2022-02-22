@@ -235,7 +235,7 @@ def tbl_ilp_solve_raw(results):
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{3}{c}{$D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.25 \\cdot \\bar d$} \\\\\n"
     ret += "      \\cline{2-4} \\cline{6-8} \\cline{10-12}  \\\\[-2ex] \\toprule\n"
-    ret += "               & rows$\\times$cols & $t$ & $\\Theta$ & & rows$\\times$cols & $t$ & $\\Theta$  & & rows$\\times$cols & $t$ & $\\Theta$ \\\\\\midrule\n"
+    ret += "               & \\Hdimh & $t$ & $\\Theta$ & & \\Hdimh & $t$ & $\\Theta$  & & \Hdimh & $t$ & $\\Theta$ \\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -246,18 +246,18 @@ def tbl_ilp_solve_raw(results):
 
     for dataset_id in sort:
         r = results[dataset_id]
-        ret += "   %s  & %s$\\times$%s  & %s  & %s && %s$\\times$%s & %s  & %s && %s$\\times$ %s & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+        ret += "   %s  & \\Hdim{%s}{%s}  & %s  & %s && \\Hdim{%s}{%s} & %s  & %s && \\Hdim{%s}{%s} & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "base", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "base", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "base", "scores", "total-score"]))
                                                                    )
 
@@ -275,7 +275,7 @@ def tbl_ilp_solve_deg2(results):
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r}\n"
     ret += "     & \\multicolumn{3}{c}{$D=0.75 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.0 \\cdot \\bar d$} & & \\multicolumn{3}{c}{$D=1.25 \\cdot \\bar d$} \\\\\n"
     ret += "      \\cline{2-4} \\cline{6-8} \\cline{10-12}  \\\\[-2ex] \\toprule\n"
-    ret += "               & rows$\\times$cols & $t$ & $\\Theta$ & & rows$\\times$cols & $t$ & $\\Theta$  & & rows$\\times$cols & $t$ & $\\Theta$ \\\\\\midrule\n"
+    ret += "               & \\Hdimh & $t$ & $\\Theta$ & & \\Hdimh & $t$ & $\\Theta$  & & \\Hdimh & $t$ & $\\Theta$ \\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -286,18 +286,18 @@ def tbl_ilp_solve_deg2(results):
 
     for dataset_id in sort:
         r = results[dataset_id]
-        ret += "   %s  & %s$\\times$%s  & %s  & %s && %s$\\times$%s & %s  & %s && %s$\\times$ %s & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+        ret += "   %s  & \\Hdim{%s}{%s} & %s  & %s &&  \\Hdim{%s}{%s} & %s  & %s && \\Hdim{%s}{%s} & %s  & %s  \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "75", "deg2", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "size", "rows"])),
                                                                     format_int(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "size", "cols"])),
-                                                                    format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "solve-time"])),
+                                                                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "ilp", "solve-time"])),
                                                                     format_float(get(results[dataset_id], ["ilp", "octilinear", "125", "deg2", "scores", "total-score"]))
                                                                    )
 
@@ -381,16 +381,16 @@ def tbl_approx_solve_deg2(results):
             err_125 = (heur_score_125  - ilp_score_125) / ilp_score_125
 
 
-        ret += "   %s  & %s  & %s  & %s\\%% && %s & %s  & %s\\%% && %s  & %s & %s\\%%   \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+        ret += "   %s  & %s  & %s  & %s && %s & %s  & %s && %s  & %s & %s   \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
                 format_float(ilp_score_75, True),
                 format_float(heur_score_75, True),
-                format_float(err_75),
+                format_perc(err_75),
                 format_float(ilp_score_100, True),
                 format_float(heur_score_100, True),
-                format_float(err_100),
+                format_perc(err_100),
                 format_float(ilp_score_125, True),
                 format_float(heur_score_125, True),
-                format_float(err_125))
+                format_perc(err_125))
 
     ret += "\\bottomrule"
     ret += "\\end{tabular*}}\n"
@@ -548,10 +548,10 @@ def tbl_sparse_ilp_comp(results):
     ret += "  \\centering\n"
     ret += "    \\caption[]{Effects of various methods of base grid simplification on ILP sizes, solution times and optimality. ILPs were optimized using gurobi. \\label{TBL:eval_sparse_ilp}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
-    ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r}\n"
-    ret += "    & \\multicolumn{1}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{3}{c}{OHG-2}  \\\\\n"
-    ret += "  \\cline{2-2} \\cline{4-6} \\cline{8-10} \\cline{12-14}  \\cline{16-18} \\\\[-2ex] \\toprule\n"
-    ret += "& $\\Theta$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ \\\\\\midrule\n"
+    ret += "  \\footnotesize\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{2}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{3}{c}{OHG-2}  \\\\\n"
+    ret += "  \\cline{2-3} \\cline{5-7} \\cline{9-11} \\cline{13-15}  \\cline{17-19} \\\\[-2ex] \\toprule\n"
+    ret += "& $\\Theta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ \\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -612,25 +612,26 @@ def tbl_sparse_ilp_comp(results):
                 avg_hanan2 += hanan2_impr
                 hanan2_c += 1
 
-        ret += "   %s  & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
-                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"])),
-                    format_float(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "scores", "total-score"])),
-                    format_float(chull_impr, True, 2),
+        ret += "   %s  & %s & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+                    format_float(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "scores", "total-score"]), True),
+                    format_msecs(get(results[dataset_id], ["ilp", "octilinear", "100", "deg2", "ilp", "solve-time"])),
+                    format_float(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "scores", "total-score"]), True),
+                    format_perc(chull_impr),
                     format_msecs(get(results[dataset_id], ["ilp", "chulloctilinear", "100", "deg2", "ilp", "solve-time"])),
-                    format_float(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "scores", "total-score"])),
-                    format_float(quad_impr, True, 2),
+                    format_float(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "scores", "total-score"]), True),
+                    format_perc(quad_impr),
                     format_msecs(get(results[dataset_id], ["ilp", "quadtree", "100", "deg2", "ilp", "solve-time"])),
-                    format_float(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "scores", "total-score"])),
-                    format_float(hanan_impr, True, 2),
+                    format_float(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "scores", "total-score"]), True),
+                    format_perc(hanan_impr),
                     format_msecs(get(results[dataset_id], ["ilp", "octihanan", "100", "deg2", "ilp", "solve-time"])),
-                    format_float(get(results[dataset_id], ["ilp", "octihanan2", "100", "deg2", "scores", "total-score"])),
-                    format_float(hanan2_impr, True, 2),
+                    format_float(get(results[dataset_id], ["ilp", "octihanan2", "100", "deg2", "scores", "total-score"]), True),
+                    format_perc(hanan2_impr),
                     format_msecs(get(results[dataset_id], ["ilp", "octihanan2", "100", "deg2", "ilp", "solve-time"]))
                 )
 
     ret += "\\midrule"
 
-    ret += "   avg  & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_float(avg_chull / chull_c) if chull_c != 0 else "---", format_perc(-avg_t_chull / chull_c) if chull_c != 0 else "---", format_float(avg_quad / quad_c) if quad_c != 0 else "---",  format_perc(-avg_t_quad / quad_c) if quad_c != 0 else "---", format_float(avg_hanan / hanan_c) if hanan_c != 0 else "---", format_perc(-avg_t_hanan / hanan_c) if hanan_c != 0 else "---", format_float(avg_hanan2 / hanan2_c) if hanan2_c != 0 else "---", format_perc(-avg_t_hanan2 / hanan2_c) if hanan2_c != 0 else "---")
+    ret += "   avg  & & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_perc(avg_chull / chull_c) if chull_c != 0 else "---", format_perc(-avg_t_chull / chull_c) if chull_c != 0 else "---", format_perc(-avg_quad / quad_c) if quad_c != 0 else "---",  format_perc(-avg_t_quad / quad_c) if quad_c != 0 else "---", format_perc(avg_hanan / hanan_c) if hanan_c != 0 else "---", format_perc(-avg_t_hanan / hanan_c) if hanan_c != 0 else "---", format_perc(avg_hanan2 / hanan2_c) if hanan2_c != 0 else "---", format_perc(-avg_t_hanan2 / hanan2_c) if hanan2_c != 0 else "---")
 
     ret += "\\bottomrule"
     ret += "\\end{tabular*}}\n"
@@ -644,10 +645,10 @@ def tbl_sparse_heur_comp(results):
     ret += "  \\centering\n"
     ret += "    \\caption[]{Effects of various methods of base grid simplification on solution times and optimality of our approximate approach. \\label{TBL:eval_sparse_heur}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{0pt}\n"
-    ret += "  \\footnotesize\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r r}\n"
-    ret += "    & \\multicolumn{1}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{4}{c}{OHG-2}  \\\\\n"
-    ret += "  \\cline{2-2} \\cline{4-6} \\cline{8-10} \\cline{12-14}  \\cline{16-19} \\\\[-2ex] \\toprule\n"
-    ret += "& $\\Theta$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ &\\\\\\midrule\n"
+    ret += "  \\footnotesize\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r r r r r r r r r r}\n"
+    ret += "    & \\multicolumn{2}{c}{Full} && \\multicolumn{3}{c}{Convex Hull} & & \\multicolumn{3}{c}{Quadtree} & & \\multicolumn{3}{c}{OHG-1}  & & \\multicolumn{4}{c}{OHG-2}  \\\\\n"
+    ret += "  \\cline{2-3} \\cline{5-7} \\cline{9-11} \\cline{13-15}  \\cline{17-20} \\\\[-2ex] \\toprule\n"
+    ret += "& $\\Theta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$  && $\\Theta$ & $\\delta$ & $t$ && $\\Theta$ & $\\delta$ & $t$ &\\\\\\midrule\n"
 
     sort = []
     for dataset_id in results:
@@ -700,25 +701,26 @@ def tbl_sparse_heur_comp(results):
         avg_t_hanan += (time_full - get(results[dataset_id],["heur", "octihanan", "100", "deg2", "time-ms"])) / time_full
         avg_t_hanan2 += (time_full - get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "time-ms"])) / time_full
 
-        ret += "   %s  & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
+        ret += "   %s  & %s & %s && %s  & %s  & %s && %s & %s  & %s && %s & %s  & %s  && %s & %s  & %s \\\\\n" % (DATASET_LABELS_SHORT[dataset_id],
             format_float(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "scores", "total-score"]), True) if topo_vios == 0 else "%d$w_\\infty$" % topo_vios,
+            format_msecs(get(results[dataset_id], ["heur", "octilinear", "100", "deg2", "time-ms"])),
             format_float(get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]), True) if topo_vios_chull == 0 else "%d$w_\\infty$" % topo_vios_chull,
-            format_float((get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]) - score_full ) / score_full, True, 2) if topo_vios_chull == 0 else "---",
+            format_perc((get(results[dataset_id],["heur", "chulloctilinear", "100", "deg2", "scores", "total-score"]) - score_full ) / score_full) if topo_vios_chull == 0 else "---",
             format_msecs(get(results[dataset_id], ["heur", "chulloctilinear", "100", "deg2", "time-ms"])),
             format_float(get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "scores", "total-score"]), True) if topo_vios_quad == 0 else "%d$w_\\infty$" % topo_vios_quad,
-            format_float((get(results[dataset_id],["heur", "quadtree", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_quad == 0 else "---",
+            format_perc((get(results[dataset_id],["heur", "quadtree", "100", "deg2", "scores", "total-score"]) - score_full) / score_full) if topo_vios_quad == 0 else "---",
             format_msecs(get(results[dataset_id], ["heur", "quadtree", "100", "deg2", "time-ms"])),
             format_float(get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "scores", "total-score"]), True) if topo_vios_hanan == 0 else "%d$w_\\infty$" % topo_vios_hanan,
-            format_float((get(results[dataset_id],["heur", "octihanan", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_hanan == 0 else "---",
+            format_perc((get(results[dataset_id],["heur", "octihanan", "100", "deg2", "scores", "total-score"]) - score_full) / score_full) if topo_vios_hanan == 0 else "---",
             format_msecs(get(results[dataset_id], ["heur", "octihanan", "100", "deg2", "time-ms"])),
             format_float(get(results[dataset_id], ["heur", "octihanan2", "100", "deg2", "scores", "total-score"]), True) if topo_vios_hanan2 == 0 else "%d$w_\\infty$" % topo_vios_hanan2,
-            format_float((get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "scores", "total-score"]) - score_full) / score_full, True, 2) if topo_vios_hanan2 == 0 else "---",
+            format_perc((get(results[dataset_id],["heur", "octihanan2", "100", "deg2", "scores", "total-score"]) - score_full) / score_full) if topo_vios_hanan2 == 0 else "---",
             format_msecs(get(results[dataset_id], ["heur", "octihanan2", "100", "deg2", "time-ms"]))
         )
 
     ret += "\\midrule"
 
-    ret += "   avg  & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_float(avg_chull / chull_c, True, 2), format_perc(-avg_t_chull / len(sort)), format_float(avg_quad / quad_c, True, 2), format_perc(-avg_t_quad / len(sort)), format_float(avg_hanan / hanan_c, True, 2), format_perc(-avg_t_hanan / len(sort)), format_float(avg_hanan2 / hanan2_c, True, 2), format_perc(-avg_t_hanan2 / len(sort)))
+    ret += "   avg  & & && & %s  & %s&& & %s  &%s && & %s  & %s && & %s  &%s \\\\\n" % (format_perc(avg_chull / chull_c), format_perc(-avg_t_chull / len(sort)), format_perc(avg_quad / quad_c), format_perc(-avg_t_quad / len(sort)), format_perc(avg_hanan / hanan_c), format_perc(-avg_t_hanan / len(sort)), format_perc(avg_hanan2 / hanan2_c), format_perc(-avg_t_hanan2 / len(sort)))
 
     ret += "\\bottomrule"
     ret += "\\end{tabular*}}\n"
@@ -730,7 +732,7 @@ def tbl_sparse_heur_comp(results):
 def tbl_time_comp_other_layouts(results):
     ret = "\\begin{table}\n"
     ret += "  \\centering\n"
-    ret += "    \\caption[]{Solve times for our methods LP-2, A-2 and A-2+D on a hexalinear and a pseudo-orthoradial base graph. The relative approximation error of our A-2 approach is given as $\\delta$. If topology violoations occured, we do not give the approximatione error, but the number of violations in parentheses. \\label{TBL:solvetimesotherlayouts}}\n"
+    ret += "    \\caption[]{Solve times for our methods LP-2, A-2 and A-2+D on a hexalinear and a pseudo-orthoradial base graph. The relative approximation error of our A-2 approach is given as $\\delta$. If topology violoations occured, we do not give the approximation error, but the number of violations in parentheses. \\label{TBL:solvetimesotherlayouts}}\n"
     ret += "    {\\renewcommand{\\baselinestretch}{1.13}\\normalsize\\setlength\\tabcolsep{3pt}\n"
     ret += "  \\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}} c r r r r r r r r r r}\n"
     ret += "   & \\multicolumn{4}{c}{\\footnotesize Hexalinear} && \\multicolumn{5}{c}{\\footnotesize Pseudo-Orthoradial}\\\\\n"
@@ -762,13 +764,13 @@ def tbl_time_comp_other_layouts(results):
         portho_err = "---"
 
         if hex_optim is not None and vio_hex_a == 0:
-            hex_err = format_float((hex_a  - hex_optim) / hex_optim)
+            hex_err = format_perc((hex_a  - hex_optim) / hex_optim)
 
         if vio_hex_a is not None and vio_hex_a > 0:
             hex_err = "--- (" + str(vio_hex_a) + ")"
 
         if portho_optim is not None and vio_portho_a == 0:
-            portho_err = format_float((portho_a  - portho_optim) / portho_optim)
+            portho_err = format_perc((portho_a  - portho_optim) / portho_optim)
 
         if vio_portho_a is not None and vio_portho_a > 0:
             portho_err = "--- (" + str(vio_portho_a) + ")"

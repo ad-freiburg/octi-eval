@@ -14,6 +14,8 @@ The following targets are provided:
 
 **`help`**: Show this README.
 
+**`check`**: Run some checks on the environment.
+
 **`render`**: Octilinearize all input line graphs in `./datasets` to `./results`.
 
 **`tables`**: Generate all tables in `./tables`

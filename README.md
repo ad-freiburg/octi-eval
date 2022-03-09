@@ -4,6 +4,8 @@ Evaluation runs for octi.
 
 This repo contains test line graphs for several test network. The Makefile is intended to evaluate octi on all of these datasets, using various methods, and write the results into .tex tables. It also produces PDF versions of these tables for debugging and quick checking.
 
+**IMPORTANT:** To evaluate the ILPs against the `gurobi` solver, a gurobi license file must be present on your system at the location specified in the environment variable `GRB_LICENSE_FILE`. If you use the Docker container (see below), the file must be placed at `/output/gurobi.lic`.
+
 ## Usage
 
 The following targets are provided:
@@ -38,3 +40,19 @@ The following parameters are read by the Makefile:
 
 **`make DATASETS=freiburg table`**
 Produce evaluation tables for the Freiburg dataset
+
+## Run with Docker
+
+Build the container:
+
+    $ docker build -t octi-eval .
+
+Run the evaluation:
+
+    $ docker run octi-eval <TARGET>
+
+where `<TARGET>` is the Makefile target (see above).
+
+Evaluation results will be output to `/output` inside the container. To retrieve them, mount `/output` to a local folder:
+
+    $ docker run -v /local/folder/:/output octi-eval <TARGET>

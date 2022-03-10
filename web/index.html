@@ -541,7 +541,7 @@ footer {
     </footer>
 
     <script>
-      var datasets = ["freiburg", "wien", "stuttgart", "berlin", "sydney"]
+      var datasets = ["freiburg", "wien", "stuttgart", "berlin", "sydney", "chicago", "london", "nyc_subway"]
       var grids = ["octilinear", "chulloctilinear", "octihanan", "octihanan2", "quadtree", "hexalinear", "porthorad"];
       var optmethods = ["heur", "ilp"];
       var gridsizes = [75, 100, 125];
@@ -618,7 +618,7 @@ footer {
         document.getElementById("stats-octi").innerHTML = "";
         return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', '../' + name + '/results/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/res_" + method + ".json");
+          xhr.open('GET', '../results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/res_" + method + ".json");
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.responseType = 'json';
           xhr.onload = function() {

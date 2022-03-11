@@ -959,6 +959,9 @@ $(RESULTS_DIR)/%/svg/heur: $(RESULTS_DIR)/%/res_heur.json
 help:
 	@cat README.md
 
+http: svg
+	@python3 -m http.server
+
 check:
 	@echo "glpk version:  " `glpsol --version | head -n1 | cut -d'v' -f3`
 	@echo "CBC version:   " `echo "x" | cbc | head -n2 | tail -n1 | cut -d' ' -f2`

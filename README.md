@@ -4,6 +4,8 @@ Evaluation runs for octi.
 
 This repo contains test line graphs for several test network. The Makefile is intended to evaluate octi on all of these datasets, using various methods, and write the results into .tex tables. It also produces PDF versions of these tables for debugging and quick checking.
 
+It also comes with a web app for inspecting the maps. An instance of this web app is running at [https://octi.cs.uni-freiburg.de](https://octi.cs.uni-freiburg.de).
+
 **IMPORTANT:** To evaluate the ILPs against the `gurobi` solver, a gurobi license file must be present on your system at the location specified in the environment variable `GRB_LICENSE_FILE`. If you use the Docker container (see below), the file must be placed at `/output/gurobi.lic`.
 
 ## Usage
@@ -16,9 +18,13 @@ The following targets are provided:
 
 **`check`**: Run some checks on the environment.
 
-**`render`**: Octilinearize all input line graphs in `./datasets` to `./results`.
+**`render`**: Schematize all input line graphs in `./datasets` to `./results`.
 
 **`tables`**: Generate all tables in `./tables`
+
+**`svg`**: Render SVG maps from all schematic line graphs
+
+**`http`**: Start HTTP server for web app at http://localhost:8000/web
 
 For additional targets, see the Makefile itself.
 

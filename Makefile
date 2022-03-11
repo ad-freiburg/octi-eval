@@ -954,7 +954,6 @@ $(RESULTS_DIR)/%/svg/heur: $(RESULTS_DIR)/%/res_heur.json
 	cat $@/ordered.json  | $(TRANSITMAP) --line-width=10 --line-spacing=6 --line-label-textsize 25  --station-label-textsize 30 -l  --tight-stations > $@/16.svg
 	cat $@/ordered.json |  $(TRANSITMAP) --line-width=4 --line-spacing=4 --line-label-textsize 12   --station-label-textsize 15 -l  --tight-stations > $@/17.svg
 	cat $@/ordered.json  |  $(TRANSITMAP) --line-width=20 --line-spacing=10 --line-label-textsize 50 --station-label-textsize 60 -l  --tight-stations > $@/full.svg
-	inkscape $@/full.svg --export-area-drawing --export-type=pdf --export-filename=$@/full.pdf
 
 help:
 	@cat README.md

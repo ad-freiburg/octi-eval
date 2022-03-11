@@ -16,7 +16,6 @@ RUN apt-get update \
        wget \
        make \
        cmake \
-	   inkscape \
 	   texlive-base \
 	   texlive-science \
 	   texlive-latex-extra \

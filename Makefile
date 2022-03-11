@@ -3,6 +3,8 @@
 # Authors: Patrick Brosi (brosi@cs.uni-freiburg.de)
 
 OCTI = octi
+TRANSITMAP = transitmap
+LOOM = loom
 
 RESULTS_DIR := results
 TABLES_DIR := tables
@@ -781,6 +783,8 @@ render-base: $(RNDR_BASE)
 
 render: render-deg2-dpen render-deg2 render-base render-quadtree-deg2 render-hexalinear-deg2 render-chulloctilinear-deg2 render-octihanan-deg2 render-octihanan2-deg2 render-porthoradial-deg2 render-quadtree-deg2-dpen render-hexalinear-deg2-dpen render-chulloctilinear-deg2-dpen render-octihanan-deg2-dpen render-octihanan2-deg2-dpen render-porthoradial-deg2-dpen
 
+svg: $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_HEXALINEAR_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_QUADTREE_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_OCTIHANAN2_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_OCTIHANAN_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_PORTHORAD_DEG2))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_DEG2_DPEN))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_HEXALINEAR_DEG2_DPEN))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_QUADTREE_DEG2_DPEN))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_OCTIHANAN2_DEG2_DPEN))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_OCTIHANAN_DEG2_DPEN))) $(subst res_ilp.json,svg/ilp,$(subst res_heur.json,svg/heur,$(RNDR_PORTHORAD_DEG2_DPEN)))
+
 all: render
 
 ## tables
@@ -904,7 +908,7 @@ $(TABLES_DIR)/tbl-sparse-heur-comp.pdf: $(TABLES_DIR)/tbl-sparse-heur-comp.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-sparse-heur-comp $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
-$(TABLES_DIR)/tbl-time-comp-other-layouts.tex: script/table.py script/template.tex $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_HEXALINEAR_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_HEXALINEAR_DEG2_ILP_100) 
+$(TABLES_DIR)/tbl-time-comp-other-layouts.tex: script/table.py script/template.tex $(RNDR_PORTHORAD_DEG2_HEUR_100) $(RNDR_HEXALINEAR_DEG2_HEUR_100) $(RNDR_PORTHORAD_DEG2_DPEN_HEUR_100) $(RNDR_HEXALINEAR_DEG2_DPEN_HEUR_100) $(RNDR_PORTHORAD_DEG2_ILP_100) $(RNDR_HEXALINEAR_DEG2_ILP_100)
 	@mkdir -p $(TABLES_DIR)
 	@python3 script/table.py time-comp-other-layouts $(patsubst %, $(RESULTS_DIR)/%, $(DATASETS)) > $@
 
@@ -928,6 +932,29 @@ $(TABLES_DIR)/tbl-mem-consumption.pdf: $(TABLES_DIR)/tbl-mem-consumption.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-mem-consumption $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
+$(RESULTS_DIR)/%/svg/heur: $(RESULTS_DIR)/%/res_heur.json
+	@printf "[%s] Rendering $@.\n" "$$(date -Is)"
+	mkdir -p $(RESULTS_DIR)/$*/svg/heur
+	cat $< | $(LOOM) > $@/ordered.json
+	cat $@/ordered.json | $(TRANSITMAP) --line-width=100 --line-spacing=50  --tight-stations > $@/1.svg
+	cp $@/1.svg $@/2.svg
+	cp $@/1.svg $@/3.svg
+	cp $@/1.svg $@/4.svg
+	cp $@/1.svg $@/5.svg
+	cp $@/1.svg $@/6.svg
+	cp $@/1.svg $@/7.svg
+	cp $@/1.svg $@/8.svg
+	cp $@/1.svg $@/9.svg
+	cp $@/1.svg $@/10.svg
+	cp $@/1.svg $@/11.svg
+	cp $@/1.svg $@/12.svg
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=60 --line-spacing=30 --line-label-textsize 180 --station-label-textsize 220  -l --no-deg2-labels --tight-stations > $@/13.svg
+	cat $@/ordered.json | $(TRANSITMAP) --line-width=35 --line-spacing=17 --line-label-textsize 100 --station-label-textsize 120 -l  --tight-stations > $@/14.svg
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=20 --line-spacing=10 --line-label-textsize 50 --station-label-textsize 60 -l  --tight-stations > $@/15.svg
+	cat $@/ordered.json  | $(TRANSITMAP) --line-width=10 --line-spacing=6 --line-label-textsize 25  --station-label-textsize 30 -l  --tight-stations > $@/16.svg
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=4 --line-spacing=4 --line-label-textsize 12   --station-label-textsize 15 -l  --tight-stations > $@/17.svg
+	cat $@/ordered.json  |  $(TRANSITMAP) --line-width=20 --line-spacing=10 --line-label-textsize 50 --station-label-textsize 60 -l  --tight-stations > $@/full.svg
+	inkscape $@/full.svg --export-area-drawing --export-type=pdf --export-filename=$@/full.pdf
 
 help:
 	@cat README.md

@@ -11,11 +11,11 @@
     <meta property="og:image" content="/octi.png">
     <meta property="og:description" content="Octi renders input graphs in an octilinear fashion using an approximation approach based on iterative shortest-path calculations on a special grid graph.">
     <link rel="icon" href="favicon.ico">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" href="lib/leaflet.css"/>
+    <script src="lib/leaflet.js"></script>
 
-        <script src="lib/proj4.js"></script>
-        <script src="lib/proj4leaflet.js"></script>
+    <script src="lib/proj4.js"></script>
+    <script src="lib/proj4leaflet.js"></script>
 
     <title>octi - Octilinear Maps on Grid Graphs</title>
 
@@ -147,6 +147,13 @@ img {
   -ms-flex: 0 0 83.333333%;
   flex: 0 0 83.333333%;
   max-width: 83.333333%
+}
+
+#octi-switcher {
+  z-index: 9999;
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 .btn {
@@ -529,6 +536,10 @@ footer {
             <img id="map" src="datasets/empty.svg" alt="Octilinearized map">
         </div>
         <div id="map-octi">
+          <div id="octi-switcher">
+            <button id="graphbut">GRAPH</button>
+            <button id="renderbut">RENDER</button>
+          </div>
         </div>
 
          <div id="stats-octi" class="stats">
@@ -631,6 +642,22 @@ footer {
               res(geojson);
           };
           xhr.send();
+        });
+      }
+
+      function loadOctiSVG(name, grid, method, d, deg2, dpen) {
+       return new Promise((res, rej) => {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '../results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/svg/" + method + "/14.svg");
+          xhr.onload = function() {
+              if (xhr.status !== 200) {
+                 console.log("C");
+                rej({});
+                return;
+              }
+              res(xhr.responseXML.documentElement);
+          };
+          xhr.send("");
         });
       }
 
@@ -805,6 +832,8 @@ footer {
 
       function changeResMap(dataset, grid, method, gridsize, deg2heur, dpen) {
         if (resLayer) mapocti.removeLayer(resLayer);
+        if (resSvg) mapocti.removeLayer(resSvg);
+
         loadOctiRes(dataset, grid, method, gridsize, deg2heur, dpen).then((geojson) => { 
           document.getElementById("stats-octi").appendChild(getStatTableRes(geojson));
           resLayer = L.Proj.geoJson(geojson, {
@@ -826,8 +855,17 @@ footer {
               }
           }
           }).addTo(mapocti);
-          mapocti.fitBounds(resLayer.getBounds());},
-          () => {console.log("Result not found.");}
+          mapocti.fitBounds(resLayer.getBounds());
+        },
+        () => {console.log("Result not found.");}
+        );
+
+        loadOctiSVG(dataset, grid, method, gridsize, deg2heur, dpen).then((svg) => { 
+          var ll = svg.getAttribute("latlng-box").split(",");
+          var bounds = [[parseFloat(ll[1]), parseFloat(ll[0])], [parseFloat(ll[3]), parseFloat(ll[2])]];
+          resSvg = L.svgOverlay(svg, bounds, {"interactive" : false});
+        },
+        () => {console.log("SVG not found.");}
         );
       }
     </script>
@@ -835,7 +873,24 @@ footer {
 
     <script>
       var map = L.map('map-raw').setView([47.9941373,7.8274107], 13);
-      var datasetLayer, resLayer;
+      var datasetLayer, resLayer, resSvg;
+
+      document.getElementById("graphbut").onclick = function() {
+        console.log("A");
+        if (resLayer && resSvg) { 
+          if (mapocti.hasLayer(resSvg)) mapocti.removeLayer(resSvg);
+          if (!mapocti.hasLayer(resLayer)) mapocti.addLayer(resLayer);
+        }
+      };
+
+      document.getElementById("renderbut").onclick = function() {
+        if (resLayer && resSvg) { 
+          if (!mapocti.hasLayer(resSvg)) mapocti.addLayer(resSvg);
+          if (mapocti.hasLayer(resLayer)) mapocti.removeLayer(resLayer);
+        }
+      };
+
+
 
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
@@ -855,7 +910,7 @@ footer {
         id: 'mapbox/light-v9',
         tileSize: 512,
         zoomOffset: -1,
-        opacity:0.3
+        opacity:0
       }).addTo(mapocti);
 
       update();

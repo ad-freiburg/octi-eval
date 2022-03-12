@@ -13,9 +13,9 @@ RUN apt-get update \
 	   glpk-utils \
 	   coinor-libcbc-dev \
 	   coinor-cbc \
-       wget \
        make \
        cmake \
+       wget \
 	   texlive-base \
 	   texlive-science \
 	   texlive-latex-extra \

@@ -932,9 +932,32 @@ $(TABLES_DIR)/tbl-mem-consumption.pdf: $(TABLES_DIR)/tbl-mem-consumption.tex
 	@pdflatex -output-directory=$(TABLES_DIR) -jobname=tbl-mem-consumption $(TABLES_DIR)/tmp > /dev/null
 	@rm $(TABLES_DIR)/tmp
 
+$(RESULTS_DIR)/%/svg/ilp: $(RESULTS_DIR)/%/res_ilp.json
+	@printf "[%s] Rendering $@.\n" "$$(date -Is)"
+	mkdir -p $@
+	cat $< | $(LOOM) > $@/ordered.json || true
+	cat $@/ordered.json | $(TRANSITMAP) --line-width=100 --line-spacing=50  --tight-stations > $@/1.svg || true
+	cp $@/1.svg $@/2.svg || true
+	cp $@/1.svg $@/3.svg || true
+	cp $@/1.svg $@/4.svg || true
+	cp $@/1.svg $@/5.svg || true
+	cp $@/1.svg $@/6.svg || true
+	cp $@/1.svg $@/7.svg || true
+	cp $@/1.svg $@/8.svg || true
+	cp $@/1.svg $@/9.svg || true
+	cp $@/1.svg $@/10.svg || true
+	cp $@/1.svg $@/11.svg || true
+	cp $@/1.svg $@/12.svg || true
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=60 --line-spacing=30 --line-label-textsize 180 --station-label-textsize 220  -l --no-deg2-labels --tight-stations > $@/13.svg || true
+	cat $@/ordered.json | $(TRANSITMAP) --line-width=35 --line-spacing=17 --line-label-textsize 100 --station-label-textsize 120 -l  --tight-stations > $@/14.svg || true
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=20 --line-spacing=10 --line-label-textsize 50 --station-label-textsize 60 -l  --tight-stations > $@/15.svg || true
+	cat $@/ordered.json  | $(TRANSITMAP) --line-width=10 --line-spacing=6 --line-label-textsize 25  --station-label-textsize 30 -l  --tight-stations > $@/16.svg || true
+	cat $@/ordered.json |  $(TRANSITMAP) --line-width=4 --line-spacing=4 --line-label-textsize 12   --station-label-textsize 15 -l  --tight-stations > $@/17.svg || true
+	cat $@/ordered.json  |  $(TRANSITMAP) --line-width=20 --line-spacing=10 --line-label-textsize 50 --station-label-textsize 60 -l  --tight-stations > $@/full.svg || true
+
 $(RESULTS_DIR)/%/svg/heur: $(RESULTS_DIR)/%/res_heur.json
 	@printf "[%s] Rendering $@.\n" "$$(date -Is)"
-	mkdir -p $(RESULTS_DIR)/$*/svg/heur
+	mkdir -p $@
 	cat $< | $(LOOM) > $@/ordered.json
 	cat $@/ordered.json | $(TRANSITMAP) --line-width=100 --line-spacing=50  --tight-stations > $@/1.svg
 	cp $@/1.svg $@/2.svg

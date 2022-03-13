@@ -1,6 +1,6 @@
 # octi eval
 
-Evaluation runs for octi.
+Evaluation setup for octi.
 
 This repo contains test line graphs for several test network. The Makefile is intended to evaluate octi on all of these datasets, using various methods, and write the results into .tex tables. It also produces PDF versions of these tables for debugging and quick checking.
 
@@ -24,7 +24,7 @@ The following targets are provided:
 
 **`svg`**: Render SVG maps from all schematic line graphs
 
-**`http`**: Start HTTP server for web app at http://localhost:8000/web
+**`http`**: Start HTTP server for web app at http://localhost:8000/
 
 For additional targets, see the Makefile itself.
 

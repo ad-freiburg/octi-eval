@@ -935,7 +935,7 @@ $(TABLES_DIR)/tbl-mem-consumption.pdf: $(TABLES_DIR)/tbl-mem-consumption.tex
 $(RESULTS_DIR)/%/svg/ilp: $(RESULTS_DIR)/%/res_ilp.json
 	@printf "[%s] Rendering $@.\n" "$$(date -Is)"
 	mkdir -p $@
-	cat $< | $(LOOM) > $@/ordered.json || true
+	cat $< | $(LOOM) --ilp-time-limit 600 > $@/ordered.json || true
 	cat $@/ordered.json | $(TRANSITMAP) --line-width=100 --line-spacing=50  --tight-stations > $@/1.svg || true
 	cp $@/1.svg $@/2.svg || true
 	cp $@/1.svg $@/3.svg || true
@@ -958,7 +958,7 @@ $(RESULTS_DIR)/%/svg/ilp: $(RESULTS_DIR)/%/res_ilp.json
 $(RESULTS_DIR)/%/svg/heur: $(RESULTS_DIR)/%/res_heur.json
 	@printf "[%s] Rendering $@.\n" "$$(date -Is)"
 	mkdir -p $@
-	cat $< | $(LOOM) > $@/ordered.json
+	cat $< | $(LOOM) --ilp-time-limit 600 > $@/ordered.json
 	cat $@/ordered.json | $(TRANSITMAP) --line-width=100 --line-spacing=50  --tight-stations > $@/1.svg
 	cp $@/1.svg $@/2.svg
 	cp $@/1.svg $@/3.svg

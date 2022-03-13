@@ -11,11 +11,11 @@
     <meta property="og:image" content="/octi.png">
     <meta property="og:description" content="Octi renders input graphs in an octilinear fashion using an approximation approach based on iterative shortest-path calculations on a special grid graph.">
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="lib/leaflet.css"/>
-    <script src="lib/leaflet.js"></script>
+    <link rel="stylesheet" href="web/lib/leaflet.css"/>
+    <script src="web/lib/leaflet.js"></script>
 
-    <script src="lib/proj4.js"></script>
-    <script src="lib/proj4leaflet.js"></script>
+    <script src="web/lib/proj4.js"></script>
+    <script src="web/lib/proj4leaflet.js"></script>
 
     <title>octi - Octilinear Maps on Grid Graphs</title>
 
@@ -533,7 +533,7 @@ footer {
 
       <div id="octimap" style="position:relative;">
         <div style="display:none;" id="map-ctn">
-            <img id="map" src="datasets/empty.svg" alt="Octilinearized map">
+            <img id="map" src="web/empty.svg" alt="Octilinearized map">
         </div>
         <div id="map-octi">
           <div id="octi-switcher">
@@ -618,18 +618,11 @@ footer {
         gridsizesel.add(option);
       }
 
-      window.onhashchange = function(){
-        //map.src="datasets/" + id + "/" + (t != "raw" ? m + "/": "") + t + ".svg";
-      }
-
-      // var pz = panzoom(map, {zoomSpeed: 0.15, minZoom: 0.5, maxZoom: 15});
-      window.onhashchange();
-
       function loadOctiRes(name, grid, method, d, deg2, dpen) {
         document.getElementById("stats-octi").innerHTML = "";
         return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', '../results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/res_" + method + ".json");
+          xhr.open('GET', '/results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/res_" + method + ".json");
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.responseType = 'json';
           xhr.onload = function() {
@@ -648,10 +641,9 @@ footer {
       function loadOctiSVG(name, grid, method, d, deg2, dpen) {
        return new Promise((res, rej) => {
           var xhr = new XMLHttpRequest();
-          xhr.open('GET', '../results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/svg/" + method + "/14.svg");
+          xhr.open('GET', '/results/' + name + '/' + grid + '/' + d + '/' + (deg2? "deg2":"") + (dpen? "-dpen":"") + "/svg/" + method + "/14.svg");
           xhr.onload = function() {
               if (xhr.status !== 200) {
-                 console.log("C");
                 rej({});
                 return;
               }
@@ -876,15 +868,14 @@ footer {
       var datasetLayer, resLayer, resSvg;
 
       document.getElementById("graphbut").onclick = function() {
-        console.log("A");
-        if (resLayer && resSvg) { 
+        if (resLayer && resSvg) {
           if (mapocti.hasLayer(resSvg)) mapocti.removeLayer(resSvg);
           if (!mapocti.hasLayer(resLayer)) mapocti.addLayer(resLayer);
         }
       };
 
       document.getElementById("renderbut").onclick = function() {
-        if (resLayer && resSvg) { 
+        if (resLayer && resSvg) {
           if (!mapocti.hasLayer(resSvg)) mapocti.addLayer(resSvg);
           if (mapocti.hasLayer(resLayer)) mapocti.removeLayer(resLayer);
         }

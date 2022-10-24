@@ -19,9 +19,8 @@
 
     <title>octi - Octilinear Maps on Grid Graphs</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Tomorrow&display=swap" rel="stylesheet">
-
     <style type="text/css">
+@font-face {font-family: 'Tomorrow';font-style: normal;font-weight: 400;font-display: swap;src: url(web/lib/font/Tomorrow-Regular.ttf) format('woff2');}
       :focus {
   outline: 0
 }
@@ -486,6 +485,11 @@ footer {
   font-size: 80%;
   line-height: 1;
 }
+
+.subtitle {
+	font-size: 12px;
+	margin: 15px;
+}
   </style>
   </head>
 
@@ -497,6 +501,9 @@ footer {
             <a class="octi-header-logo octi-font" href="#">octi evaluation</a>
           </div>
         </div>
+        <div class="subtitle">
+			Hannah Bast, Patrick Brosi, Sabine Storandt, <a href="http://ad-publications.informatik.uni-freiburg.de/EuroVis%20octi-maps.pdf">Metro Maps on Octilinear Grid Graphs</a>, 2020 Eurovis. <br>Hannah Bast, Patrick Brosi, Sabine Storandt, <a href="http://ad-publications.informatik.uni-freiburg.de/SSTD_Metro%20Maps%20on%20Flexible%20Base%20Grids.pdf">Metro Maps on Flexible Base Grids</a>, SSTD 2021.
+		</div>
       </header>
 
       <div class="nav-wrp">
@@ -859,10 +866,7 @@ footer {
         () => {console.log("SVG not found.");}
         );
       }
-    </script>
 
-
-    <script>
       var map = L.map('map-raw').setView([47.9941373,7.8274107], 13);
       var datasetLayer, resLayer, resSvg;
 
@@ -879,8 +883,6 @@ footer {
           if (mapocti.hasLayer(resLayer)) mapocti.removeLayer(resLayer);
         }
       };
-
-
 
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
